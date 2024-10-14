@@ -1,0 +1,10 @@
+{
+  "editor.formatOnSave": true,
+  "editor.acceptSuggestionOnEnter": "on",
+  "diffEditor.hideUnchangedRegions.enabled": false,
+  "editor.fontSize": 15,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.organizeImports": "explicit"
+  }
+}

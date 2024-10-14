@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1086594400978",
+    "project_id": "finwell-c93d1",
+    "storage_bucket": "finwell-c93d1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086594400978:android:74869169450be6ac2ce30b",
+        "android_client_info": {
+          "package_name": "com.example.finwell"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1086594400978-1v71smu02fflftto1t112djtlui4huv7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.finwell",
+            "certificate_hash": "b562066516e67410c150187e166d142fc55f34bc"
+          }
+        },
+        {
+          "client_id": "1086594400978-2f40q9370ht0i9oee1u0db1rc34eohkv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZbr2kMuilpRxRF0L11tQvy0lFbe4IWcU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1086594400978-2f40q9370ht0i9oee1u0db1rc34eohkv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,8 +1,9 @@
 import 'package:finwell/core/extensions/build_context.dart';
-import 'package:finwell/core/routes/custom_route_builder.dart';
+import 'package:finwell/core/route_manager/custom_route_builder.dart';
 import 'package:finwell/core/widgets/next_button.dart';
 import 'package:finwell/core/widgets/text_field/custom_text_field.dart';
 import 'package:finwell/feature/auth/presentation/bloc/auth_bloc.dart';
+import 'package:finwell/feature/onboarding/presentation/cubit/onboarding_cubit.dart';
 import 'package:finwell/feature/onboarding/presentation/income_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class _NamePageState extends State<NamePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     user = context.read<AuthBloc>().state.currentUser;
   }
 
@@ -52,7 +54,8 @@ class _NamePageState extends State<NamePage> {
                       showField = true;
                     });
                   },
-                  style: const TextStyle(color: Colors.white, fontSize: 25),
+                  style: TextStyle(
+                      color: context.currentTheme!.textColor, fontSize: 25),
                 ),
               ),
               SizedBox(
@@ -82,6 +85,9 @@ class _NamePageState extends State<NamePage> {
                   opacity: showField ? 1 : 0,
                   child: NextButton(
                     onPressed: () {
+                      context
+                          .read<OnboardingCubit>()
+                          .updateUserName(name: nameController.text);
                       Navigator.of(context).push(
                           StackSlide(to: const IncomePage(), fromPage: widget));
                     },

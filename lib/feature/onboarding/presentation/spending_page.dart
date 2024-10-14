@@ -1,7 +1,10 @@
 import 'package:finwell/core/extensions/build_context.dart';
+import 'package:finwell/core/extensions/ext_string.dart';
 import 'package:finwell/core/widgets/next_button.dart';
 import 'package:finwell/core/widgets/text_field/custom_text_field.dart';
+import 'package:finwell/feature/onboarding/presentation/cubit/onboarding_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:typewritertext/typewritertext.dart';
@@ -43,7 +46,8 @@ class _SpendingPageState extends State<SpendingPage> {
                         showField = true;
                       });
                     },
-                    style: const TextStyle(color: Colors.white, fontSize: 25),
+                    style: TextStyle(
+                        color: context.currentTheme!.textColor, fontSize: 25),
                   )
                   // Text(
                   //   "What is your appoximate monthly spending",
@@ -85,7 +89,10 @@ class _SpendingPageState extends State<SpendingPage> {
                   duration: const Duration(milliseconds: 500),
                   opacity: showField ? 1 : 0,
                   child: NextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<OnboardingCubit>().updateMonthlyExpense(
+                          monthlyExpense: _controller.text.removeCommas);
+                    },
                   ),
                 )
               ],

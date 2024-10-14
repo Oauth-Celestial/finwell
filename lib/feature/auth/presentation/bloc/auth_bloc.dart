@@ -18,28 +18,38 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       : _googleLoginUseCase = googleLoginUseCase,
         _createUserUseCase = createUserUseCase,
         super(AuthState.initial()) {
-    on<AuthEvent>((event, emit) {
-      emit(state.copyWith(status: AuthStatus.loading));
-    });
     on<AuthLoginWithGoogle>(_handleGoogleLogin);
+    on<AuthLoggedInUser>(_handleLoggedInUser);
   }
 
   void _handleGoogleLogin(
       AuthLoginWithGoogle event, Emitter<AuthState> emit) async {
+    emit(state.copyWith(status: AuthStatus.loading));
     try {
       final result = await _googleLoginUseCase(NoParamsType());
       await result.fold((failure) {
         emit(state.copyWith(status: AuthStatus.failure));
-      }, (success) async {
-        final hascreatedUser = await _createUserUseCase(success);
+      }, (user) async {
+        final hascreatedUser = await _createUserUseCase(user);
         hascreatedUser.fold((failure) {
           emit(state.copyWith(status: AuthStatus.failure));
         }, (success) {
           emit(state.copyWith(
+            currentUser: user,
             status: AuthStatus.success,
           ));
         });
       });
     } catch (e) {}
+  }
+
+  void _handleLoggedInUser(AuthLoggedInUser event, Emitter<AuthState> emit) {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      emit(state.copyWith(
+        currentUser: user,
+        status: AuthStatus.success,
+      ));
+    }
   }
 }

@@ -29,7 +29,7 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       keyboardType: keyboardType,
-      cursorColor: Colors.white,
+      cursorColor: ColorHelper.fromHex("#30b481"),
       onChanged: onChange,
       style: TextStyle(color: context.currentTheme?.textColor),
       decoration: InputDecoration(

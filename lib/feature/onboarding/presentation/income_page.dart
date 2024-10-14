@@ -1,9 +1,12 @@
 import 'package:finwell/core/extensions/build_context.dart';
-import 'package:finwell/core/routes/custom_route_builder.dart';
+import 'package:finwell/core/extensions/ext_string.dart';
+import 'package:finwell/core/route_manager/custom_route_builder.dart';
 import 'package:finwell/core/widgets/next_button.dart';
 import 'package:finwell/core/widgets/text_field/custom_text_field.dart';
+import 'package:finwell/feature/onboarding/presentation/cubit/onboarding_cubit.dart';
 import 'package:finwell/feature/onboarding/presentation/spending_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:typewritertext/typewritertext.dart';
@@ -46,7 +49,8 @@ class _IncomePageState extends State<IncomePage> {
                       showField = true;
                     });
                   },
-                  style: const TextStyle(color: Colors.white, fontSize: 25),
+                  style: TextStyle(
+                      color: context.currentTheme!.textColor, fontSize: 25),
                 ),
               ),
               SizedBox(
@@ -84,6 +88,8 @@ class _IncomePageState extends State<IncomePage> {
                   duration: const Duration(milliseconds: 650),
                   opacity: showField ? 1 : 0,
                   child: NextButton(onPressed: () {
+                    context.read<OnboardingCubit>().updateMonthlyIncome(
+                        monthlyIncome: _controller.text.removeCommas);
                     Navigator.of(context).push(
                         StackSlide(to: const SpendingPage(), fromPage: widget));
                   }),

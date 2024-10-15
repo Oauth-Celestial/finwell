@@ -1,5 +1,5 @@
 import 'package:finwell/feature/auth/presentation/login_page.dart';
-import 'package:finwell/feature/home/presentation/home.dart';
+import 'package:finwell/feature/dashboard/presentation/dashboard.dart';
 import 'package:finwell/feature/onboarding/presentation/name_page.dart';
 import 'package:finwell/feature/splash_screen/presentation/splash_screen.dart';
 import 'package:flutter/material.dart';

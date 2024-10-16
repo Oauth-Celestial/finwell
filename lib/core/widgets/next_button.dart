@@ -18,7 +18,7 @@ class NextButton extends StatelessWidget {
           child: Text(
             "Next",
             style: TextStyle(
-                color: context.currentTheme?.textColor,
+                color: context.currentTheme?.backgroundColor,
                 fontSize: 16,
                 fontWeight: FontWeight.bold),
           ),

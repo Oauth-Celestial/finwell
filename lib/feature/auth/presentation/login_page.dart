@@ -7,10 +7,53 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:theme_manager_plus/theme_manager_plus.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  Future<void> _requestAndroidNotificationPermission() async {
+    if (await Permission.notification.isDenied) {
+      await Permission.notification.request();
+    }
+  }
+
+  Future<void> _requestSmsPermission() async {
+    PermissionStatus status = await Permission.sms.status;
+    if (status.isDenied) {
+      // Request the permission
+      status = await Permission.sms.request();
+    }
+
+    if (status.isGranted) {
+      // Permission granted
+      print('SMS permission granted');
+    } else if (status.isDenied) {
+      // Permission denied
+      print('SMS permission denied');
+    } else if (status.isPermanentlyDenied) {
+      // Permission permanently denied, open app settings
+      //openAppSettings();
+    }
+  }
+
+  getPermissions() async {
+    await _requestAndroidNotificationPermission();
+    await _requestSmsPermission();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getPermissions();
+  }
 
   @override
   Widget build(BuildContext context) {

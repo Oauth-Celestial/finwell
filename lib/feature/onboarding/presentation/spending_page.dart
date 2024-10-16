@@ -1,5 +1,7 @@
 import 'package:finwell/core/extensions/build_context.dart';
 import 'package:finwell/core/extensions/ext_string.dart';
+import 'package:finwell/core/route_manager/navigator_service.dart';
+import 'package:finwell/core/route_manager/route_manager.dart';
 import 'package:finwell/core/widgets/next_button.dart';
 import 'package:finwell/core/widgets/text_field/custom_text_field.dart';
 import 'package:finwell/feature/onboarding/presentation/cubit/onboarding_cubit.dart';
@@ -92,6 +94,7 @@ class _SpendingPageState extends State<SpendingPage> {
                     onPressed: () {
                       context.read<OnboardingCubit>().updateMonthlyExpense(
                           monthlyExpense: _controller.text.removeCommas);
+                      NavigationService().pushNamed(routeHomeScreen);
                     },
                   ),
                 )

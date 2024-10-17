@@ -1,6 +1,7 @@
 import 'package:finwell/feature/auth/presentation/login_page.dart';
 import 'package:finwell/feature/home/presentation/home.dart';
 import 'package:finwell/feature/onboarding/presentation/name_page.dart';
+import 'package:finwell/feature/onboarding/presentation/pre_login_onboarding/pre_login_onboard.dart';
 import 'package:finwell/feature/splash_screen/presentation/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -29,6 +30,10 @@ class AppRouteManager {
       case routeHomeScreen:
         return MaterialPageRoute(
             builder: (_) => const HomePage(), settings: settings);
+      case preLoginOnboardScreen:
+        return MaterialPageRoute(
+            builder: (_) => const PreLoginOnboardingScreen(),
+            settings: settings);
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

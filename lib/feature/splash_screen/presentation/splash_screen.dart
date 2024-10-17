@@ -22,7 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (FirebaseAuth.instance.currentUser != null) {
         NavigationService().pushNamed(routeHomeScreen);
       } else {
-        NavigationService().pushNamed(routeLoginScreen);
+        NavigationService().pushNamed(preLoginOnboardScreen);
       }
     });
   }

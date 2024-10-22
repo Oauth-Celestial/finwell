@@ -86,6 +86,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: context.currentTheme!.backgroundColor,
         appBar: AppBar(
           automaticallyImplyLeading: false,
+          centerTitle: true,
           backgroundColor: context.currentTheme!.backgroundColor,
           title: Text(
             "Finwell",

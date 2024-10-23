@@ -9,7 +9,7 @@ part 'user_cubit_state.dart';
 class UserCubitCubit extends Cubit<UserCubitState> {
   UserCubitCubit() : super(UserCubitState.initial());
 
-  getCurrentUser() async {
+  Future<bool> getCurrentUser() async {
     emit(state.copyWith(status: UserStatus.loading));
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
         .collection('Users')
@@ -18,5 +18,6 @@ class UserCubitCubit extends Cubit<UserCubitState> {
     AppUserModel userData =
         AppUserModel.fromMap(snapshot.data() as Map<String, dynamic>);
     emit(state.copyWith(userData: userData, status: UserStatus.loggedin));
+    return true;
   }
 }

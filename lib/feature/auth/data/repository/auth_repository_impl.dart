@@ -1,3 +1,4 @@
+import 'package:finwell/core/app_user/model/app_user_model.dart';
 import 'package:finwell/core/errors/failure.dart';
 import 'package:finwell/feature/auth/data/datasource/auth_data_source.dart';
 import 'package:finwell/feature/auth/domain/repository/auth_repository.dart';
@@ -21,9 +22,9 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> createUser({required User user}) async {
+  Future<Either<Failure, AppUserModel>> createUser({required User user}) async {
     try {
-      bool result = await authDataSource.createUser(user: user);
+      AppUserModel result = await authDataSource.createUser(user: user);
 
       return right(result);
     } catch (e) {

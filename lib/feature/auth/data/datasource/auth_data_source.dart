@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:finwell/core/app_user/model/app_user_model.dart';
 import 'package:finwell/core/errors/failure.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 abstract interface class AuthDataSource {
   Future<User> loginWithGoogle();
-  Future<bool> createUser({required User user});
+  Future<AppUserModel> createUser({required User user});
 }
 
 class AuthDataSourceImpl implements AuthDataSource {
@@ -35,7 +37,7 @@ class AuthDataSourceImpl implements AuthDataSource {
   }
 
   @override
-  Future<bool> createUser({required User user}) async {
+  Future<AppUserModel> createUser({required User user}) async {
     try {
       String authId = user.uid;
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
@@ -43,9 +45,22 @@ class AuthDataSourceImpl implements AuthDataSource {
           .doc(authId)
           .get();
       if (userDoc.exists) {
-        return true;
+        AppUserModel userData =
+            AppUserModel.fromMap(userDoc.data() as Map<String, dynamic>);
+        return userData;
       } else {
         try {
+          String? deviceToken = await FirebaseMessaging.instance.getToken();
+          Map<String, dynamic> userData = {
+            "userId": user.uid,
+            "name": user.displayName,
+            "email": user.email,
+            "monthly_income": 0,
+            "monthly_spend": 0,
+            "joined_on": DateTime.now(),
+            "last_used": DateTime.now(),
+            "deviceToken": deviceToken
+          };
           await FirebaseFirestore.instance.collection("Users").doc(authId).set({
             "userId": user.uid,
             "name": user.displayName,
@@ -55,7 +70,7 @@ class AuthDataSourceImpl implements AuthDataSource {
             "joined_on": DateTime.now(),
             "last_used": DateTime.now()
           });
-          return true;
+          return AppUserModel.fromMap(userData);
         } catch (e) {
           throw (Failure(failureMessage: "User Creation Failed"));
         }

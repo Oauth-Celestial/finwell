@@ -1,8 +1,10 @@
+import 'package:finwell/core/app_user/user_cubit/user_cubit_cubit.dart';
 import 'package:finwell/core/extensions/build_context.dart';
 import 'package:finwell/core/route_manager/navigator_service.dart';
 import 'package:finwell/core/route_manager/route_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,10 +19,16 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    //context.read<AuthBloc>().add(AuthLoggedInUser());
+
     Future.delayed(const Duration(milliseconds: 500), () {
       if (FirebaseAuth.instance.currentUser != null) {
-        NavigationService().pushNamed(routeHomeScreen);
+        NavigationService()
+            .navigationContext!
+            .read<UserCubitCubit>()
+            .getCurrentUser()
+            .then((value) {
+          NavigationService().pushNamed(routeDashboardScreen);
+        });
       } else {
         NavigationService().pushNamed(preLoginOnboardScreen);
       }

@@ -94,7 +94,7 @@ class _SpendingPageState extends State<SpendingPage> {
                     onPressed: () {
                       context.read<OnboardingCubit>().updateMonthlyExpense(
                           monthlyExpense: _controller.text.removeCommas);
-                      NavigationService().pushNamed(routeHomeScreen);
+                      NavigationService().pushNamed(routeUserSuccess);
                     },
                   ),
                 )

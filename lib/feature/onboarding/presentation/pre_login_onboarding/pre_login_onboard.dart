@@ -110,6 +110,7 @@ class _PreLoginOnboardingScreenState extends State<PreLoginOnboardingScreen> {
                 children: [
                   Text(
                     onboardingData[currentPage]["title"]!,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 24.sp,
                       fontWeight: FontWeight.bold,
@@ -131,7 +132,7 @@ class _PreLoginOnboardingScreenState extends State<PreLoginOnboardingScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       padding: EdgeInsets.symmetric(
-                          horizontal: 50.w, vertical: 15.h),
+                          horizontal: 50.w, vertical: 10.h),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.r),
                       ),

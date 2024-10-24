@@ -1,9 +1,9 @@
 import 'package:finwell/core/app_user/user_cubit/user_cubit_cubit.dart';
 import 'package:finwell/core/extensions/build_context.dart';
 import 'package:finwell/core/route_manager/navigator_service.dart';
-import 'package:finwell/feature/dashboard/presentation/pages/home_page.dart';
 import 'package:finwell/feature/dashboard/presentation/pages/profile_page.dart';
 import 'package:finwell/feature/dashboard/presentation/pages/stats_page.dart';
+import 'package:finwell/feature/transaction/presentation/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

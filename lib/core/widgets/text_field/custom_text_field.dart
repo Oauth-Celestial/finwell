@@ -11,6 +11,8 @@ class CustomTextField extends StatelessWidget {
   final TextInputType keyboardType;
   Function(String)? onChange;
   List<TextInputFormatter>? inputFormatter;
+  CustomTextFieldStyle borderStyle;
+  Function()? onTap;
 
   CustomTextField(
       {super.key,
@@ -20,6 +22,8 @@ class CustomTextField extends StatelessWidget {
       this.padding = const EdgeInsets.all(16.0),
       this.keyboardType = TextInputType.text,
       this.onChange,
+      this.onTap,
+      this.borderStyle = CustomTextFieldStyle.outlined,
       this.inputFormatter});
 
   @override
@@ -31,8 +35,22 @@ class CustomTextField extends StatelessWidget {
       keyboardType: keyboardType,
       cursorColor: ColorHelper.fromHex("#30b481"),
       onChanged: onChange,
+      readOnly: onTap != null,
+      onTap: onTap,
       style: TextStyle(color: context.currentTheme?.textColor),
-      decoration: InputDecoration(
+      decoration: getDecoration(
+          style: borderStyle, padding: padding, hintText: hintText),
+    );
+  }
+}
+
+InputDecoration getDecoration(
+    {required CustomTextFieldStyle style,
+    String? hintText,
+    EdgeInsetsGeometry? padding}) {
+  switch (style) {
+    case CustomTextFieldStyle.outlined:
+      return InputDecoration(
         hintText: hintText,
         contentPadding: padding,
         // Customizing the border
@@ -50,7 +68,20 @@ class CustomTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(5),
           borderSide: BorderSide(color: Colors.grey.shade300, width: 1.0),
         ),
-      ),
-    );
+      );
+    case CustomTextFieldStyle.underline:
+      return InputDecoration(
+        hintText: hintText,
+        contentPadding: padding,
+        // Customizing the border
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: ColorHelper.fromHex("#30b481")),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: ColorHelper.fromHex("#30b481")),
+        ),
+      );
   }
 }
+
+enum CustomTextFieldStyle { outlined, underline }

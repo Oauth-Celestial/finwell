@@ -61,15 +61,10 @@ class AuthDataSourceImpl implements AuthDataSource {
             "last_used": DateTime.now(),
             "deviceToken": deviceToken
           };
-          await FirebaseFirestore.instance.collection("Users").doc(authId).set({
-            "userId": user.uid,
-            "name": user.displayName,
-            "email": user.email,
-            "monthly_income": 0,
-            "monthly_spend": 0,
-            "joined_on": DateTime.now(),
-            "last_used": DateTime.now()
-          });
+          await FirebaseFirestore.instance
+              .collection("Users")
+              .doc(authId)
+              .set(userData);
           return AppUserModel.fromMap(userData);
         } catch (e) {
           throw (Failure(failureMessage: "User Creation Failed"));

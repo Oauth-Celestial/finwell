@@ -6,3 +6,4 @@ const String routeNameScreen = "/name";
 const String routeDashboardScreen = "/dashboard";
 const String preLoginOnboardScreen = "/preLoginOnboardScreen";
 const String routeUserSuccess = "/userSuccess";
+const String routeAddTransaction = "/addTransaction";

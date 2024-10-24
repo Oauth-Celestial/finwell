@@ -17,6 +17,7 @@ class UserCreationSuccess extends StatefulWidget {
 class _UserCreationSuccessState extends State<UserCreationSuccess>
     with SingleTickerProviderStateMixin {
   AnimationController? _controller;
+
   @override
   Widget build(BuildContext context) {
     String userName =

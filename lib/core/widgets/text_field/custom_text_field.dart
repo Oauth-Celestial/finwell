@@ -12,6 +12,7 @@ class CustomTextField extends StatelessWidget {
   Function(String)? onChange;
   List<TextInputFormatter>? inputFormatter;
   CustomTextFieldStyle borderStyle;
+  String? Function(String?)? validator;
   Function()? onTap;
 
   CustomTextField(
@@ -23,12 +24,14 @@ class CustomTextField extends StatelessWidget {
       this.keyboardType = TextInputType.text,
       this.onChange,
       this.onTap,
+      this.validator,
       this.borderStyle = CustomTextFieldStyle.outlined,
       this.inputFormatter});
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
+      validator: validator,
       inputFormatters: inputFormatter,
       controller: controller,
       obscureText: obscureText,

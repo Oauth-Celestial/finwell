@@ -14,6 +14,10 @@ import 'package:finwell/feature/onboarding/data/repository/onboarding_repository
 import 'package:finwell/feature/onboarding/domain/usecase/update_user_usecase.dart';
 import 'package:finwell/feature/onboarding/presentation/cubit/onboarding_cubit.dart';
 import 'package:finwell/feature/splash_screen/presentation/splash_screen.dart';
+import 'package:finwell/feature/transaction/data/datasource/transaction_data_source.dart';
+import 'package:finwell/feature/transaction/data/repository/transaction_repo_impl.dart';
+import 'package:finwell/feature/transaction/domain/usecase/create_transaction_usecase.dart';
+import 'package:finwell/feature/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,7 +53,16 @@ void main() async {
           ),
         ),
       ),
-      BlocProvider(create: (_) => UserCubitCubit())
+      BlocProvider(create: (_) => UserCubitCubit()),
+      BlocProvider(
+        create: (_) => TransactionBloc(
+          createtransactionusecase: CreateTransactionUsecase(
+            transactionRepository: TransactionRepoImpl(
+              dataSource: TransactionDataSourceImpl(),
+            ),
+          ),
+        ),
+      )
     ],
     child: const MyApp(),
   ));

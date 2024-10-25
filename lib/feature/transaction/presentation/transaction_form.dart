@@ -4,8 +4,12 @@ import 'package:finwell/core/extensions/ext_date_time.dart';
 import 'package:finwell/core/extensions/ext_string.dart';
 import 'package:finwell/core/widgets/custom_drop_down.dart';
 import 'package:finwell/core/widgets/text_field/custom_text_field.dart';
+import 'package:finwell/feature/transaction/domain/entities/transaction_model.dart';
+import 'package:finwell/feature/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:uuid/uuid.dart';
 
 class TransactionForm extends StatefulWidget {
   bool isforExpense;
@@ -116,6 +120,8 @@ class _TransactionFormState extends State<TransactionForm> {
   TextEditingController _amountController = TextEditingController();
   TextEditingController _dateController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String selectedTransactionType = "";
+  String selectedCategory = "";
 
   @override
   void initState() {
@@ -185,6 +191,9 @@ class _TransactionFormState extends State<TransactionForm> {
                 SizedBox(
                   height: 40.h,
                   child: CustomDropdownButton(
+                    selectedItem: (value) {
+                      selectedTransactionType = value;
+                    },
                     initialSelection: widget.isforExpense
                         ? CustomDropDownItem(
                             text: "Expense",
@@ -261,6 +270,9 @@ class _TransactionFormState extends State<TransactionForm> {
                   height: 40.h,
                   child: CustomDropdownButton(
                     options: financialCategories,
+                    selectedItem: (value) {
+                      selectedCategory = value;
+                    },
                   ),
                 ),
                 SizedBox(
@@ -296,19 +308,46 @@ class _TransactionFormState extends State<TransactionForm> {
                     Spacer(),
                     InkWell(
                       onTap: () {
-                        if (_formKey.currentState!.validate()) {}
+                        if (_formKey.currentState!.validate()) {
+                          String transactionId = Uuid().v1();
+                          TransactionModel currentTransaction =
+                              TransactionModel(
+                            transactionId: transactionId,
+                            transactionName: _nameController.text,
+                            transactionType: selectedTransactionType,
+                            transactionAmount:
+                                _amountController.text.removeCommas,
+                            transactionDate: picked!,
+                            transactionCategory: selectedCategory,
+                          );
+                          context.read<TransactionBloc>().add(
+                              CreateTransactionEvent(
+                                  transaction: currentTransaction));
+                        }
                       },
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: context.currentTheme!.buttonColor,
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Text(
-                            "Add Transaction",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
+                      child: BlocConsumer<TransactionBloc, TransactionState>(
+                        listener: (context, state) {
+                          if (state.status == TransactionStatus.failed) {
+                            print("Failed");
+                          }
+                        },
+                        builder: (context, state) {
+                          if (state.status == TransactionStatus.creating) {
+                            return CircularProgressIndicator();
+                          }
+                          return Container(
+                            decoration: BoxDecoration(
+                                color: context.currentTheme!.buttonColor,
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text(
+                                "Add Transaction",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                     SizedBox(

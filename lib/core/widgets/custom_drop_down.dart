@@ -14,7 +14,12 @@ class CustomDropDownItem {
 class CustomDropdownButton extends StatefulWidget {
   List<CustomDropDownItem> options;
   CustomDropDownItem? initialSelection;
-  CustomDropdownButton({Key? key, required this.options, this.initialSelection})
+  Function(String)? selectedItem;
+  CustomDropdownButton(
+      {Key? key,
+      required this.options,
+      this.initialSelection,
+      this.selectedItem})
       : super(key: key);
   @override
   _CustomDropdownButtonState createState() => _CustomDropdownButtonState();
@@ -32,6 +37,7 @@ class _CustomDropdownButtonState extends State<CustomDropdownButton> {
         ? widget.options[0].text
         : widget.initialSelection?.text ?? "";
     super.initState();
+    widget.selectedItem?.call(dropdownValue);
   }
 
   // List of options with associated icons

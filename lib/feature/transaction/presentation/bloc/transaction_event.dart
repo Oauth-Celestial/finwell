@@ -14,3 +14,10 @@ class CreateTransactionEvent extends TransactionEvent {
     required this.transaction,
   });
 }
+
+class FetchTransactionEvent extends TransactionEvent {
+  String transactionDate;
+  FetchTransactionEvent({
+    required this.transactionDate,
+  });
+}

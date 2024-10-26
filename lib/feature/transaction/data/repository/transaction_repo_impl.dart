@@ -23,4 +23,17 @@ class TransactionRepoImpl implements TransactionRepository {
       return left(e as Failure);
     }
   }
+
+  @override
+  Future<Either<Failure, List<TransactionModel>>> fetchTransaction(
+      String transactionDate) async {
+    // TODO: implement fetchTransaction
+    try {
+      List<TransactionModel> transaction =
+          await dataSource.fetchTransaction(transactionDate);
+      return right(transaction);
+    } catch (e) {
+      return left(e as Failure);
+    }
+  }
 }

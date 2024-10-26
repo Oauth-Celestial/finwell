@@ -5,4 +5,7 @@ import 'package:fpdart/fpdart.dart';
 abstract interface class TransactionRepository {
   Future<Either<Failure, TransactionModel>> createTransaction(
       TransactionModel transactionData);
+
+  Future<Either<Failure, List<TransactionModel>>> fetchTransaction(
+      String transactionDate);
 }

@@ -1,4 +1,5 @@
 import 'package:finwell/core/app_user/user_cubit/user_cubit_cubit.dart';
+import 'package:finwell/core/database/database_helper.dart';
 import 'package:finwell/core/notification/notification_service.dart';
 import 'package:finwell/core/route_manager/navigator_service.dart';
 import 'package:finwell/core/route_manager/route_manager.dart';
@@ -29,6 +30,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await NotificationService().initNotification();
+  DatabaseHelper().getDb();
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider(

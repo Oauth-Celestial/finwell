@@ -34,7 +34,9 @@ class SmsReceiver : BroadcastReceiver() {
                         Log.d("SmsReceiver", "Phone Number: $phoneNumber; Message: $message")
 
                         // Show notification
-                        showNotification(context, phoneNumber, message)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            showNotification(context, phoneNumber, message)
+                        }
                     }
                 }
             } catch (e: Exception) {
@@ -45,6 +47,14 @@ class SmsReceiver : BroadcastReceiver() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun showNotification(context: Context, phoneNumber: String, message: String) {
+
+        try {
+            DatabaseHelper.instance.insertMessage(message)
+        }
+        catch(_: Exception){
+
+        }
+
         val channelId = "finwell"
         val notificationId = System.currentTimeMillis().toInt()
 

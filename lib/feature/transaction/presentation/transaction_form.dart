@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:finwell/core/constants/constants.dart';
 import 'package:finwell/core/extensions/build_context.dart';
 import 'package:finwell/core/extensions/ext_date_time.dart';
 import 'package:finwell/core/extensions/ext_string.dart';
@@ -21,101 +22,9 @@ class TransactionForm extends StatefulWidget {
 
 class _TransactionFormState extends State<TransactionForm> {
   DateTime? picked = DateTime.now();
-  final List<CustomDropDownItem> financialCategories = [
-    CustomDropDownItem(
-      text: 'Housing',
-      icon: Icon(Icons.home, color: Colors.blue),
-    ),
-    CustomDropDownItem(
-      text: 'Transportation',
-      icon: Icon(Icons.directions_car, color: Colors.green),
-    ),
-    CustomDropDownItem(
-      text: 'Food & Groceries',
-      icon: Icon(Icons.local_grocery_store, color: Colors.orange),
-    ),
-    CustomDropDownItem(
-      text: 'Utilities & Bills',
-      icon: Icon(Icons.receipt_long, color: Colors.red),
-    ),
-    CustomDropDownItem(
-      text: 'Health & Wellness',
-      icon: Icon(Icons.local_hospital, color: Colors.pink),
-    ),
-    CustomDropDownItem(
-      text: 'Entertainment & Leisure',
-      icon: Icon(Icons.movie, color: Colors.purple),
-    ),
-    CustomDropDownItem(
-      text: 'Personal Care',
-      icon: Icon(Icons.spa, color: Colors.teal),
-    ),
-    CustomDropDownItem(
-      text: 'Education',
-      icon: Icon(Icons.school, color: Colors.indigo),
-    ),
-    CustomDropDownItem(
-      text: 'Debt Payments',
-      icon: Icon(Icons.payment, color: Colors.brown),
-    ),
-    CustomDropDownItem(
-      text: 'Insurance',
-      icon: Icon(Icons.shield, color: Colors.grey),
-    ),
-    CustomDropDownItem(
-      text: 'Investments & Savings',
-      icon: Icon(Icons.trending_up, color: Colors.green),
-    ),
-    CustomDropDownItem(
-      text: 'Gifts & Donations',
-      icon: Icon(Icons.card_giftcard, color: Colors.redAccent),
-    ),
-    CustomDropDownItem(
-      text: 'Miscellaneous',
-      icon: Icon(Icons.more_horiz, color: Colors.black),
-    ),
-    // Income Categories
-    CustomDropDownItem(
-      text: 'Salary/Wages',
-      icon: Icon(Icons.attach_money, color: Colors.greenAccent),
-    ),
-    CustomDropDownItem(
-      text: 'Freelance/Side Jobs',
-      icon: Icon(Icons.work, color: Colors.blueAccent),
-    ),
-    CustomDropDownItem(
-      text: 'Investments',
-      icon: Icon(Icons.show_chart, color: Colors.purpleAccent),
-    ),
-    CustomDropDownItem(
-      text: 'Rental Income',
-      icon: Icon(Icons.house, color: Colors.amber),
-    ),
-    CustomDropDownItem(
-      text: 'Business Income',
-      icon: Icon(Icons.business, color: Colors.blueGrey),
-    ),
-    CustomDropDownItem(
-      text: 'Government Benefits',
-      icon: Icon(Icons.account_balance, color: Colors.deepOrange),
-    ),
-    CustomDropDownItem(
-      text: 'Gifts',
-      icon: Icon(Icons.card_giftcard, color: Colors.pinkAccent),
-    ),
-    CustomDropDownItem(
-      text: 'Refunds & Rebates',
-      icon: Icon(Icons.receipt, color: Colors.cyan),
-    ),
-    CustomDropDownItem(
-      text: 'Bonuses & Commissions',
-      icon: Icon(Icons.emoji_events, color: Colors.yellow),
-    ),
-    CustomDropDownItem(
-      text: 'Royalties',
-      icon: Icon(Icons.library_books, color: Colors.deepPurple),
-    ),
-  ];
+  final List<CustomDropDownItem> financialCategories = dropdownItems.map((e) {
+    return CustomDropDownItem(text: e["text"], icon: e["icon"]);
+  }).toList();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
   TextEditingController _dateController = TextEditingController();

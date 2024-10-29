@@ -20,10 +20,12 @@ class DatabaseHelper {
         }
     }
 
-    fun insertMessage(message:String){
+    fun insertMessage(textMessage:String){
         openDataBase()
-        val sql = "INSERT into messages (message) VALUES(${message})"
-        db!!.execSQL(sql)
+
+            val sql = "INSERT into messages (message) VALUES(\"$textMessage\")"
+            db!!.execSQL(sql)
+
 
     }
 

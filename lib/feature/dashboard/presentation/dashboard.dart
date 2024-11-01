@@ -1,7 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:finwell/core/app_user/user_cubit/user_cubit_cubit.dart';
 import 'package:finwell/core/extensions/build_context.dart';
 import 'package:finwell/core/extensions/ext_date_time.dart';
 import 'package:finwell/core/route_manager/navigator_service.dart';
+import 'package:finwell/core/route_manager/route_manager.dart';
 import 'package:finwell/feature/dashboard/presentation/pages/profile_page.dart';
 import 'package:finwell/feature/dashboard/presentation/pages/stats_page.dart';
 import 'package:finwell/feature/transaction/presentation/bloc/transaction_bloc.dart';
@@ -76,6 +78,13 @@ class _DashboardPageState extends State<DashboardPage> {
                 color: context.currentTheme!.textColor,
                 fontWeight: FontWeight.bold),
           ),
+          actions: [
+            BellIcon(
+              onPressed: () {
+                Navigator.pushNamed(context, routePendingTransaction);
+              },
+            )
+          ],
         ),
         body: BlocBuilder<UserCubitCubit, UserCubitState>(
           builder: (context, state) {
@@ -105,5 +114,55 @@ class _DashboardPageState extends State<DashboardPage> {
                   );
           },
         ));
+  }
+}
+
+class BellIcon extends StatefulWidget {
+  Function() onPressed;
+  BellIcon({
+    Key? key,
+    required this.onPressed,
+  }) : super(key: key);
+  @override
+  _BellIconState createState() => _BellIconState();
+}
+
+class _BellIconState extends State<BellIcon>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _animation = Tween<double>(begin: 1.0, end: 1.2).animate(_controller);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaleTransition(
+      scale: _animation,
+      child: IconButton(
+        icon: Icon(
+          Icons.notifications,
+          size: 25,
+          color: context.currentTheme!.buttonColor,
+        ),
+        onPressed: () {
+          widget.onPressed();
+        },
+      ),
+    );
   }
 }

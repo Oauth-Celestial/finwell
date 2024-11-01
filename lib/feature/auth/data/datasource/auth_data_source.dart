@@ -47,7 +47,7 @@ class AuthDataSourceImpl implements AuthDataSource {
       if (userDoc.exists) {
         AppUserModel userData =
             AppUserModel.fromMap(userDoc.data() as Map<String, dynamic>);
-        return userData;
+        return userData.copyWith(alreadyUser: true);
       } else {
         try {
           String? deviceToken = await FirebaseMessaging.instance.getToken();

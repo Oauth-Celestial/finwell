@@ -91,6 +91,7 @@ class MyApp extends StatelessWidget {
             currentTheme: lightTheme,
             child: MaterialApp(
               title: 'Flutter Demo',
+              debugShowCheckedModeBanner: false,
               onGenerateRoute: AppRouteManager.shared.generateRoute,
               navigatorKey: NavigationService().navigationKey,
               theme: ThemeData(

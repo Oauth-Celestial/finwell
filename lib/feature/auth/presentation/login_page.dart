@@ -118,7 +118,11 @@ class _LoginPageState extends State<LoginPage> {
             BlocConsumer<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state.status == AuthStatus.success) {
-                  NavigationService().pushNamed(routeNameScreen);
+                  if (state.userData?.alreadyUser ?? false) {
+                    NavigationService().pushNamed(routeNameScreen);
+                  } else {
+                    NavigationService().pushNamed(routeDashboardScreen);
+                  }
                 }
               },
               builder: (context, state) {

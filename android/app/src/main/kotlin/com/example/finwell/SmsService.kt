@@ -41,9 +41,9 @@ class SmsReceiver : BroadcastReceiver() {
 
                             if(isTransactionMessage){
                                 val amount = getAmount(message)
-                                val transactionType = message.lowercase().contains("debited")
+                                val isExpense = message.lowercase().contains("debited") || message.lowercase().contains("sent")
 
-                                    message = if(transactionType){
+                                    message = if(isExpense){
                                         // Output: Amount: 150.0
                                         "You have Spend - ₹${amount} "
                                     } else{
@@ -51,7 +51,7 @@ class SmsReceiver : BroadcastReceiver() {
                                     }
 
 
-                                    showNotification(context,amount.toString(),message,transactionType)
+                                    showNotification(context,amount.toString(),message,isExpense)
 
 
                             }
@@ -86,8 +86,8 @@ class SmsReceiver : BroadcastReceiver() {
 
     private fun classifyMessage(message: String): Boolean {
         // Define a regex pattern to match transaction messages
-        val pattern = Regex("""(?i)\b(debited|credited|amount|transaction|upi)\b""")
-        return pattern.containsMatchIn(message)
+        val pattern = Regex("""(?i)\b(debited|credited|amount|transaction|upi|sent|received)\b""")
+        return pattern.containsMatchIn(message.lowercase())
     }
 
 

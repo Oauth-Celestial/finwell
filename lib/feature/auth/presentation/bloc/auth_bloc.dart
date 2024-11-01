@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:finwell/core/app_user/model/app_user_model.dart';
 import 'package:finwell/core/usecase/use_cases.dart';
 import 'package:finwell/feature/auth/domain/usecase/create_user_use_case.dart';
 import 'package:finwell/feature/auth/domain/usecase/google_login_use_case.dart';

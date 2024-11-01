@@ -7,28 +7,29 @@ class AppUserModel {
   String uuid;
   int monthlyIncome;
   int monthlyExpense;
-  AppUserModel({
-    required this.userName,
-    required this.email,
-    required this.uuid,
-    required this.monthlyIncome,
-    required this.monthlyExpense,
-  });
+  bool alreadyUser;
+  AppUserModel(
+      {required this.userName,
+      required this.email,
+      required this.uuid,
+      required this.monthlyIncome,
+      required this.monthlyExpense,
+      this.alreadyUser = false});
 
-  AppUserModel copyWith({
-    String? userName,
-    String? email,
-    String? uuid,
-    int? monthlyIncome,
-    int? monthlyExpense,
-  }) {
+  AppUserModel copyWith(
+      {String? userName,
+      String? email,
+      String? uuid,
+      int? monthlyIncome,
+      int? monthlyExpense,
+      bool? alreadyUser}) {
     return AppUserModel(
-      userName: userName ?? this.userName,
-      email: email ?? this.email,
-      uuid: uuid ?? this.uuid,
-      monthlyIncome: monthlyIncome ?? this.monthlyIncome,
-      monthlyExpense: monthlyExpense ?? this.monthlyExpense,
-    );
+        userName: userName ?? this.userName,
+        email: email ?? this.email,
+        uuid: uuid ?? this.uuid,
+        monthlyIncome: monthlyIncome ?? this.monthlyIncome,
+        monthlyExpense: monthlyExpense ?? this.monthlyExpense,
+        alreadyUser: alreadyUser ?? this.alreadyUser);
   }
 
   Map<String, dynamic> toMap() {

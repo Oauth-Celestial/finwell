@@ -11,6 +11,15 @@ class DatabaseHelper {
 
   Database? db;
   String dbName = "finwell.db";
+  String tableName = "transactions";
+  String columnAmount = "TransactionAmount";
+  String columnCategory = "TransactionCategory";
+  String columnDate = "TransactionDate";
+  String columnTransactionId = "TransactionId";
+  String columnTransactionName = "TransactionName";
+  String columnTransactionType = "TransactionType";
+  String columnTransactionStatus = "TransactionStatus";
+
   factory DatabaseHelper() {
     return _instance;
   }
@@ -29,10 +38,16 @@ class DatabaseHelper {
 
       return openDatabase(dbPath, onCreate: (db, version) {
         db.execute('''
-          CREATE TABLE messages(
-            id INTEGER PRIMARY KEY,
-            message TEXT
-          )
+          CREATE TABLE ${tableName} (
+    id INTEGER PRIMARY KEY,
+    ${columnAmount} TEXT NOT NULL,
+    ${columnCategory} TEXT NOT NULL,
+    ${columnDate} INTEGER NOT NULL,
+    ${columnTransactionId} TEXT,
+    ${columnTransactionName} TEXT NOT NULL,
+   ${columnTransactionType} TEXT NOT NULL,
+   ${columnTransactionStatus} BOOLEAN NOT NULL
+          );
           ''');
       }, version: 1);
     } catch (e) {

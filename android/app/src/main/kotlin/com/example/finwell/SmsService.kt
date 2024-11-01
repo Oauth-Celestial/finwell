@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import java.util.regex.Pattern
+import kotlin.random.Random
 
 
 class SmsReceiver : BroadcastReceiver() {
@@ -36,23 +37,22 @@ class SmsReceiver : BroadcastReceiver() {
                         // Show notification
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-                            var isTransactionMessage = classifyMessage(phoneNumber)
+                            var isTransactionMessage = classifyMessage(message)
 
                             if(isTransactionMessage){
-                                val (amount, type) = extractTransactionAmount(message)
+                                val amount = getAmount(message)
+                                val transactionType = message.lowercase().contains("debited")
 
-                                if (amount != null && type != null) {
-                                    println("Amount: $amount")
-                                    message = if(type){
+                                    message = if(transactionType){
                                         // Output: Amount: 150.0
                                         "You have Spend - ₹${amount} "
                                     } else{
                                         "You Have received + ₹${amount}  "
                                     }
-                                  showNotification(context,amount.toString(),message,type)
-                                } else {
-                                    println("No transaction found.")
-                                }
+
+
+                                    showNotification(context,amount.toString(),message,transactionType)
+
 
                             }
 
@@ -66,33 +66,37 @@ class SmsReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun classifyMessage(message: String): Boolean {
-        // Define a regex pattern to match transaction messages
-        val regEx: Pattern = Pattern.compile("[a-zA-Z0-9]{2}-[a-zA-Z0-9]{6}")
 
-        // Check if the message matches the transaction pattern
-        val m = regEx.matcher(message)
-        return m.find()
-    }
+    private fun getAmount(text:String): String {
 
-    private fun extractTransactionAmount(message: String): Pair<Double?, Boolean?> {
-        val regex = Regex("(credited|debited|received) \\$(\\d+(?:\\.\\d{1,2})?)")
-        val matchResult = regex.find(message.lowercase())
 
-        return if (matchResult != null) {
-            val amount = matchResult.groupValues[2].toDoubleOrNull()
-            val type = matchResult.groupValues[1]
-            Pair(amount, type.lowercase() == "debited")
+        // Define the regex pattern
+        val pattern = Regex("""Rs\.\s*(\d+\.\d{2}|\d+)""")
+
+        // Find the match
+        val matchResult = pattern.find(text)
+
+        // Extract and print the amount if found
+        if (matchResult != null) {
+            return matchResult.groupValues[1]
         } else {
-            Pair(null, null) // No transaction found
+          return  ""
         }
     }
 
+    private fun classifyMessage(message: String): Boolean {
+        // Define a regex pattern to match transaction messages
+        val pattern = Regex("""(?i)\b(debited|credited|amount|transaction|upi)\b""")
+        return pattern.containsMatchIn(message)
+    }
+
+
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun showNotification(context: Context, amount: String, message: String, debited: Boolean) {
+    private fun showNotification(context: Context, amount: String, message: String, debited: Boolean, ) {
 
         try {
-            DatabaseHelper.instance.insertMessage(message)
+            if (amount.isEmpty()) return
+            DatabaseHelper.instance.insertTransaction(amount,debited)
         }
         catch(e: Exception){
             Log.e("db ex", e.toString())
@@ -100,10 +104,6 @@ class SmsReceiver : BroadcastReceiver() {
 
         var transactionAmount :String = ""
         var transactionMessage = "";
-
-
-
-
 
 
         val channelId = "finwell"
@@ -118,28 +118,61 @@ class SmsReceiver : BroadcastReceiver() {
 
         val spent =  if (debited) "Spent" else "Received"
 
+        if(amount.isEmpty()){
+            val notificationBuilder = NotificationCompat.Builder(context, channelId)
+                    .setSmallIcon(android.R.drawable.ic_menu_view)
+                    .setContentTitle("A Transaction took place")
+                    .setContentText(getNotificationTitle())
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true)
 
+            val notificationManager = NotificationManagerCompat.from(context)
+            notificationManager.createNotificationChannel(channel)
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
 
-        val notificationBuilder = NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(android.R.drawable.ic_menu_view)
-                .setContentTitle("Tell us where you $spent")
-                .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true)
+                return
+            }
+            notificationManager.notify(notificationId, notificationBuilder.build())
 
-        val notificationManager = NotificationManagerCompat.from(context)
-        notificationManager.createNotificationChannel(channel)
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
         }
-        notificationManager.notify(notificationId, notificationBuilder.build())
+        else{
+            val notificationBuilder = NotificationCompat.Builder(context, channelId)
+                    .setSmallIcon(android.R.drawable.ic_menu_view)
+                    .setContentTitle("Tell us where you $spent")
+                    .setContentText(message)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true)
+
+            val notificationManager = NotificationManagerCompat.from(context)
+            notificationManager.createNotificationChannel(channel)
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+
+                return
+            }
+            notificationManager.notify(notificationId, notificationBuilder.build())
+        }
+        }
+
+
+
+    fun getNotificationTitle(): String {
+        // List of funny transaction messages
+        val notifications = listOf(
+                "Looks like you've been busy making money moves! 💸",
+                "Ah, I see your wallet is getting some exercise! 🏋️‍♂️",
+                "Well, well, someone's been making it rain! ☔️",
+                "I see you've taken a little trip to the transaction side! 🚀",
+                "Your bank account just did a happy dance! 💃🕺",
+                "Looks like you’ve been shopping like a pro! 🛒💳",
+                "I see you've got some new numbers to brag about! 📈",
+                "Looks like you've been making those digits work overtime! 🔢💼"
+        )
+
+        // Pick a random notification
+        val randomNotification = notifications[Random.nextInt(notifications.size)]
+
+        // Print the random notification
+      return  randomNotification
     }
 
 

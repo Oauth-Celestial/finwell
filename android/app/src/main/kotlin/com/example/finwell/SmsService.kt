@@ -71,17 +71,18 @@ class SmsReceiver : BroadcastReceiver() {
 
 
         // Define the regex pattern
-        val pattern = Regex("""Rs\.\s*(\d+\.\d{2}|\d+)""")
+        //val transactionMessage = "ICICI Bank Acct XX989 debited for Rs 500.00 on 02-Nov-24; yashdchaudhari9 credited. UPI:467346656220. Call 18002662 for dispute. SMS BLOCK 989 to 9215676766."
 
-        // Find the match
-        val matchResult = pattern.find(text)
+        // Regular expression to match amounts prefixed with Rs or INR
+        val regex = """\b(?:rs|inr)\s*([\d,]+(?:\.\d{1,2})?)\b""".toRegex()
+
+        // Find the first match in the transaction message
+        val match = regex.find(text.lowercase())
 
         // Extract and print the amount if found
-        if (matchResult != null) {
-            return matchResult.groupValues[1]
-        } else {
-          return  ""
-        }
+        match?.let {
+          return  "Rs ${it.groups[1]?.value}"
+        } ?: return  ""
     }
 
     private fun classifyMessage(message: String): Boolean {
@@ -95,8 +96,10 @@ class SmsReceiver : BroadcastReceiver() {
     private fun showNotification(context: Context, amount: String, message: String, debited: Boolean, ) {
 
         try {
-            if (amount.isEmpty()) return
-            DatabaseHelper.instance.insertTransaction(amount,debited)
+           if(amount.isNotEmpty()){
+               DatabaseHelper.instance.insertTransaction(amount,debited)
+           }
+
         }
         catch(e: Exception){
             Log.e("db ex", e.toString())

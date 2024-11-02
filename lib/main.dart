@@ -14,6 +14,10 @@ import 'package:finwell/feature/onboarding/data/datasource/onboarding_datasource
 import 'package:finwell/feature/onboarding/data/repository/onboarding_repository_impl.dart';
 import 'package:finwell/feature/onboarding/domain/usecase/update_user_usecase.dart';
 import 'package:finwell/feature/onboarding/presentation/cubit/onboarding_cubit.dart';
+import 'package:finwell/feature/pending_transactions/data/datasource/pending_transaction_data_source.dart';
+import 'package:finwell/feature/pending_transactions/data/repository/pending_repo_impl.dart';
+import 'package:finwell/feature/pending_transactions/domain/usecase/pending_transaction_usecase.dart';
+import 'package:finwell/feature/pending_transactions/presentation/bloc/pending_transaction_bloc.dart';
 import 'package:finwell/feature/splash_screen/presentation/splash_screen.dart';
 import 'package:finwell/feature/transaction/data/datasource/transaction_data_source.dart';
 import 'package:finwell/feature/transaction/data/repository/transaction_repo_impl.dart';
@@ -68,6 +72,15 @@ void main() async {
             transactionRepository: TransactionRepoImpl(
               dataSource: TransactionDataSourceImpl(),
             ),
+          ),
+        ),
+      ),
+      BlocProvider(
+        create: (_) => PendingTransactionBloc(
+          pendingTransactionUsecase: PendingTransactionUsecase(
+            pendingTransactionRepository: PendingRepoImpl(
+                pendingTransactionDataSource:
+                    PendingTransactionDataSourceImpl()),
           ),
         ),
       )

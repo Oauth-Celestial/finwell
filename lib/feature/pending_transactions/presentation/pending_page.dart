@@ -2,6 +2,7 @@ import 'package:finwell/core/extensions/build_context.dart';
 import 'package:finwell/core/extensions/ext_date_time.dart';
 import 'package:finwell/feature/pending_transactions/domain/entity/pending_transaction_model.dart';
 import 'package:finwell/feature/pending_transactions/presentation/bloc/pending_transaction_bloc.dart';
+import 'package:finwell/feature/transaction/presentation/transaction_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -116,29 +117,44 @@ class PendingTransactionCard extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Container(
-                      width: 35.w,
-                      height: 35.w,
-                      child: Icon(
-                        Icons.check,
-                        color: Colors.white,
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => TransactionForm(
+                                  pendingTransactionData: cardData,
+                                )));
+                      },
+                      child: Container(
+                        width: 35.w,
+                        height: 35.w,
+                        child: Icon(
+                          Icons.check,
+                          color: Colors.white,
+                        ),
+                        decoration: BoxDecoration(
+                            color: context.currentTheme!.buttonColor,
+                            shape: BoxShape.circle),
                       ),
-                      decoration: BoxDecoration(
-                          color: context.currentTheme!.buttonColor,
-                          shape: BoxShape.circle),
                     ),
                     SizedBox(
                       width: 10.w,
                     ),
-                    Container(
-                      width: 35.w,
-                      height: 35.w,
-                      child: Icon(
-                        Icons.delete,
-                        color: Colors.white,
+                    InkWell(
+                      onTap: () {
+                        context.read<PendingTransactionBloc>().add(
+                            DeletePendingTransactionEvent(
+                                deleteTransaction: cardData!));
+                      },
+                      child: Container(
+                        width: 35.w,
+                        height: 35.w,
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                        ),
+                        decoration: BoxDecoration(
+                            color: Colors.red, shape: BoxShape.circle),
                       ),
-                      decoration: BoxDecoration(
-                          color: Colors.red, shape: BoxShape.circle),
                     )
                   ],
                 )

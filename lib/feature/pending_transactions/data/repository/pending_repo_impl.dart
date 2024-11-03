@@ -22,4 +22,17 @@ class PendingRepoImpl implements PendingTransactionRepository {
       return left(Failure(failureMessage: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> removePendingTransactions(
+      PendingTransactionModel pendingTransaction) async {
+    // TODO: implement removePendingTransactions
+    try {
+      bool hasRemovedRecord = await pendingTransactionDataSource
+          .removePendingTransactions(pendingTransaction);
+      return right(hasRemovedRecord);
+    } catch (e) {
+      return left(e as Failure);
+    }
+  }
 }

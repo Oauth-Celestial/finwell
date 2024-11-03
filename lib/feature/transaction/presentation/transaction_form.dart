@@ -3,8 +3,12 @@ import 'package:finwell/core/constants/constants.dart';
 import 'package:finwell/core/extensions/build_context.dart';
 import 'package:finwell/core/extensions/ext_date_time.dart';
 import 'package:finwell/core/extensions/ext_string.dart';
+import 'package:finwell/core/route_manager/navigator_service.dart';
+import 'package:finwell/core/route_manager/route_manager.dart';
 import 'package:finwell/core/widgets/custom_drop_down.dart';
 import 'package:finwell/core/widgets/text_field/custom_text_field.dart';
+import 'package:finwell/feature/pending_transactions/domain/entity/pending_transaction_model.dart';
+import 'package:finwell/feature/pending_transactions/presentation/bloc/pending_transaction_bloc.dart';
 import 'package:finwell/feature/transaction/domain/entities/transaction_model.dart';
 import 'package:finwell/feature/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +18,9 @@ import 'package:uuid/uuid.dart';
 
 class TransactionForm extends StatefulWidget {
   bool isforExpense;
-  TransactionForm({super.key, this.isforExpense = true});
+  PendingTransactionModel? pendingTransactionData;
+  TransactionForm(
+      {super.key, this.isforExpense = true, this.pendingTransactionData});
 
   @override
   State<TransactionForm> createState() => _TransactionFormState();
@@ -36,6 +42,16 @@ class _TransactionFormState extends State<TransactionForm> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    if (widget.pendingTransactionData != null) {
+      picked = widget.pendingTransactionData?.transctionDate ?? DateTime.now();
+      _amountController.text = widget.pendingTransactionData?.amount
+              .toLowerCase()
+              .replaceAll("rs", "")
+              .replaceAll(",", "")
+              .formatAsNumber() ??
+          "";
+      widget.isforExpense = widget.pendingTransactionData?.isExpense ?? false;
+    }
     _dateController.text = picked!.toCustomFormattedString();
   }
 
@@ -229,6 +245,12 @@ class _TransactionFormState extends State<TransactionForm> {
                             transactionDate: picked!,
                             transactionCategory: selectedCategory,
                           );
+                          if (widget.pendingTransactionData != null) {
+                            context.read<PendingTransactionBloc>().add(
+                                DeletePendingTransactionEvent(
+                                    deleteTransaction:
+                                        widget.pendingTransactionData!));
+                          }
                           context.read<TransactionBloc>().add(
                               CreateTransactionEvent(
                                   transaction: currentTransaction));
@@ -238,6 +260,9 @@ class _TransactionFormState extends State<TransactionForm> {
                         listener: (context, state) {
                           if (state.status == TransactionStatus.failed) {
                             print("Failed");
+                          }
+                          if (state.status == TransactionStatus.created) {
+                            NavigationService().popUntil(routeDashboardScreen);
                           }
                         },
                         builder: (context, state) {

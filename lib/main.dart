@@ -17,6 +17,7 @@ import 'package:finwell/feature/onboarding/presentation/cubit/onboarding_cubit.d
 import 'package:finwell/feature/pending_transactions/data/datasource/pending_transaction_data_source.dart';
 import 'package:finwell/feature/pending_transactions/data/repository/pending_repo_impl.dart';
 import 'package:finwell/feature/pending_transactions/domain/usecase/pending_transaction_usecase.dart';
+import 'package:finwell/feature/pending_transactions/domain/usecase/remove_pending_transaction_usecase.dart';
 import 'package:finwell/feature/pending_transactions/presentation/bloc/pending_transaction_bloc.dart';
 import 'package:finwell/feature/splash_screen/presentation/splash_screen.dart';
 import 'package:finwell/feature/transaction/data/datasource/transaction_data_source.dart';
@@ -77,12 +78,15 @@ void main() async {
       ),
       BlocProvider(
         create: (_) => PendingTransactionBloc(
-          pendingTransactionUsecase: PendingTransactionUsecase(
-            pendingTransactionRepository: PendingRepoImpl(
-                pendingTransactionDataSource:
-                    PendingTransactionDataSourceImpl()),
-          ),
-        ),
+            pendingTransactionUsecase: PendingTransactionUsecase(
+              pendingTransactionRepository: PendingRepoImpl(
+                  pendingTransactionDataSource:
+                      PendingTransactionDataSourceImpl()),
+            ),
+            removePendingTransactionsUseCase: RemovePendingTransactionUsecase(
+                pendingTransactionRepository: PendingRepoImpl(
+                    pendingTransactionDataSource:
+                        PendingTransactionDataSourceImpl()))),
       )
     ],
     child: const MyApp(),

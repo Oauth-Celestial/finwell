@@ -5,4 +5,7 @@ import 'package:fpdart/fpdart.dart';
 abstract interface class PendingTransactionRepository {
   Future<Either<Failure, List<PendingTransactionModel>>>
       getPendingTransaction();
+
+  Future<Either<Failure, bool>> removePendingTransactions(
+      PendingTransactionModel pendingTransaction);
 }

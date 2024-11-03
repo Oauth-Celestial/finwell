@@ -10,8 +10,13 @@ extension StringHelper on String {
 
   // Method to format a string number as a decimal pattern
   String formatAsNumber() {
+    if (this.contains(".")) {
+      String removeDecimal = this.split(".").first;
+      return NumberFormat.decimalPattern(_locale)
+          .format(int.parse(removeDecimal));
+    }
     return NumberFormat.decimalPattern(_locale)
-        .format(int.parse(this.isEmpty ? "0" : this));
+        .format(int.parse(this.isEmpty ? "0" : this.trim()));
   }
 
   // Method to get the currency symbol for the locale

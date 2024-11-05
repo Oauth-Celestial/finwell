@@ -11,14 +11,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class TransactionPage extends StatefulWidget {
+  const TransactionPage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<TransactionPage> createState() => _TransactionPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _TransactionPageState extends State<TransactionPage> {
   DateTime currentSelectedDate = DateTime.now();
   @override
   Widget build(BuildContext context) {
@@ -32,76 +32,78 @@ class _HomePageState extends State<HomePage> {
         },
         child: const Icon(Icons.add, color: Colors.white, size: 28),
       ),
-      body: Column(
-        children: [
-          HorizontalCalendar(
-            onDateChange: (selectedDate) {
-              currentSelectedDate = selectedDate;
-              NavigationService()
-                  .navigationContext!
-                  .read<TransactionBloc>()
-                  .add(FetchTransactionEvent(
-                      transactionDate:
-                          currentSelectedDate.toCustomFormattedString()));
-            },
-          ),
-          Expanded(
-            child: BlocConsumer<TransactionBloc, TransactionState>(
-              listener: (context, state) {},
-              builder: (context, state) {
-                if (state.status == TransactionStatus.loading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                if ((state.fetchedTransactions ?? []).isEmpty) {
-                  return Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                            width: 80.w,
-                            height: 80.w,
-                            child: Image.asset("assets/expense.png")),
-                        SizedBox(
-                          height: 20.h,
-                        ),
-                        Text(
-                          "No Records Found",
-                          style: TextStyle(fontSize: 16.sp),
-                        ),
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                      ],
-                    ),
-                  );
-                }
-                return Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.h),
-                  child: ListView.separated(
-                    separatorBuilder: (context, index) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10.w),
-                        child: Divider(),
-                      );
-                    },
-                    itemCount: state.fetchedTransactions?.length ?? 0,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TransactionCard(
-                          transaction: state.fetchedTransactions?[index],
-                        ),
-                      );
-                    },
-                  ),
-                );
+      body: SafeArea(
+        child: Column(
+          children: [
+            HorizontalCalendar(
+              onDateChange: (selectedDate) {
+                currentSelectedDate = selectedDate;
+                NavigationService()
+                    .navigationContext!
+                    .read<TransactionBloc>()
+                    .add(FetchTransactionEvent(
+                        transactionDate:
+                            currentSelectedDate.toCustomFormattedString()));
               },
             ),
-          )
-        ],
+            Expanded(
+              child: BlocConsumer<TransactionBloc, TransactionState>(
+                listener: (context, state) {},
+                builder: (context, state) {
+                  if (state.status == TransactionStatus.loading) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if ((state.fetchedTransactions ?? []).isEmpty) {
+                    return Container(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                              width: 80.w,
+                              height: 80.w,
+                              child: Image.asset("assets/expense.png")),
+                          SizedBox(
+                            height: 20.h,
+                          ),
+                          Text(
+                            "No Records Found",
+                            style: TextStyle(fontSize: 16.sp),
+                          ),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10.w),
+                          child: Divider(),
+                        );
+                      },
+                      itemCount: state.fetchedTransactions?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TransactionCard(
+                            transaction: state.fetchedTransactions?[index],
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

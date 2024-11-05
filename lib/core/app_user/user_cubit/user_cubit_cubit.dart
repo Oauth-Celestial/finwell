@@ -6,18 +6,27 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 part 'user_cubit_state.dart';
 
-class UserCubitCubit extends Cubit<UserCubitState> {
-  UserCubitCubit() : super(UserCubitState.initial());
+class UserCubit extends Cubit<UserCubitState> {
+  UserCubit() : super(UserCubitState.initial());
 
   Future<bool> getCurrentUser() async {
-    emit(state.copyWith(status: UserStatus.loading));
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection('Users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    AppUserModel userData =
-        AppUserModel.fromMap(snapshot.data() as Map<String, dynamic>);
-    emit(state.copyWith(userData: userData, status: UserStatus.loggedin));
-    return true;
+    try {
+      emit(state.copyWith(status: UserStatus.loading));
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
+      AppUserModel userData =
+          AppUserModel.fromMap(snapshot.data() as Map<String, dynamic>);
+      emit(state.copyWith(userData: userData, status: UserStatus.loggedin));
+      return true;
+    } catch (e) {
+      logoutUser();
+      return false;
+    }
+  }
+
+  logoutUser() {
+    emit(UserCubitState.initial());
   }
 }

@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class AppUserModel {
   String userName;
@@ -8,12 +10,14 @@ class AppUserModel {
   int monthlyIncome;
   int monthlyExpense;
   bool alreadyUser;
+  DateTime? joinedOn;
   AppUserModel(
       {required this.userName,
       required this.email,
       required this.uuid,
       required this.monthlyIncome,
       required this.monthlyExpense,
+      this.joinedOn,
       this.alreadyUser = false});
 
   AppUserModel copyWith(
@@ -44,12 +48,14 @@ class AppUserModel {
 
   factory AppUserModel.fromMap(Map<String, dynamic> map) {
     return AppUserModel(
-      userName: map["name"] as String,
-      email: map['email'] as String,
-      uuid: map["userId"] as String,
-      monthlyIncome: map["monthly_income"] as int,
-      monthlyExpense: map["monthly_spend"] as int,
-    );
+        userName: map["name"] as String,
+        email: map['email'] as String,
+        uuid: map["userId"] as String,
+        monthlyIncome: map["monthly_income"] as int,
+        monthlyExpense: map["monthly_spend"] as int,
+        joinedOn: (map['joined_on'] is Timestamp)
+            ? (map['joined_on'] as Timestamp).toDate()
+            : map['joined_on']);
   }
 
   String toJson() => json.encode(toMap());

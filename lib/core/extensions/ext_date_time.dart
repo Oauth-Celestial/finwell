@@ -40,4 +40,14 @@ extension CustomDateFormatting on DateTime {
         DateFormat("d'$suffix' MMM yyyy 'at' h:mm a").format(this);
     return formattedDate;
   }
+
+  String toMonthYear() {
+    return DateFormat('MMMM:yyyy').format(this);
+  }
+
+  int get day => this.day;
+  int get month => this.month;
+  int get year => this.year;
+
+  String get monthName => DateFormat('MMMM').format(this);
 }

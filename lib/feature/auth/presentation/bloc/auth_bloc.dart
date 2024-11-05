@@ -6,6 +6,7 @@ import 'package:finwell/feature/auth/domain/usecase/google_login_use_case.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -21,6 +22,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         super(AuthState.initial()) {
     on<AuthLoginWithGoogle>(_handleGoogleLogin);
     on<AuthLoggedInUser>(_handleLoggedInUser);
+    on<AuthLogoutUser>(_handleLogout);
   }
 
   void _handleGoogleLogin(
@@ -37,6 +39,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }, (success) {
           emit(state.copyWith(
             currentUser: user,
+            userData: success,
             status: AuthStatus.success,
           ));
         });
@@ -52,5 +55,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         status: AuthStatus.success,
       ));
     }
+  }
+
+  void _handleLogout(AuthLogoutUser event, Emitter<AuthState> emit) async {
+    await FirebaseAuth.instance.signOut();
+    await GoogleSignIn().signOut();
+    emit(AuthState.initial());
   }
 }

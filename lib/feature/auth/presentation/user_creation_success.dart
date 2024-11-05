@@ -20,8 +20,7 @@ class _UserCreationSuccessState extends State<UserCreationSuccess>
 
   @override
   Widget build(BuildContext context) {
-    String userName =
-        context.read<UserCubitCubit>().state.userData?.userName ?? "";
+    String userName = context.read<UserCubit>().state.userData?.userName ?? "";
     return PopScope(
       canPop: false,
       child: Scaffold(

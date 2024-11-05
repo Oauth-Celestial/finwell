@@ -4,6 +4,7 @@ import 'package:finwell/core/route_manager/route_manager.dart';
 import 'package:finwell/core/theme/theme_model.dart';
 import 'package:finwell/feature/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -46,6 +47,7 @@ class _LoginPageState extends State<LoginPage> {
   getPermissions() async {
     await _requestAndroidNotificationPermission();
     await _requestSmsPermission();
+    await UsageStatsPermission.requestUsageStatsPermission();
   }
 
   @override
@@ -119,9 +121,9 @@ class _LoginPageState extends State<LoginPage> {
               listener: (context, state) {
                 if (state.status == AuthStatus.success) {
                   if (state.userData?.alreadyUser ?? false) {
-                    NavigationService().pushNamed(routeNameScreen);
-                  } else {
                     NavigationService().pushNamed(routeDashboardScreen);
+                  } else {
+                    NavigationService().pushNamed(routeNameScreen);
                   }
                 }
               },
@@ -172,5 +174,21 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+}
+
+class UsageStatsPermission {
+  static const MethodChannel _channel = MethodChannel('timeTracker');
+
+  // Method to check if permission is granted
+  static Future<bool> hasUsageStatsPermission() async {
+    final bool hasPermission =
+        await _channel.invokeMethod('hasUsageStatsPermission');
+    return hasPermission;
+  }
+
+  // Method to request the permission
+  static Future<void> requestUsageStatsPermission() async {
+    await _channel.invokeMethod('requestUsageStatsPermission');
   }
 }

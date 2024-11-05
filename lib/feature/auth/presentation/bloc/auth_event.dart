@@ -6,3 +6,5 @@ sealed class AuthEvent {}
 class AuthLoginWithGoogle extends AuthEvent {}
 
 class AuthLoggedInUser extends AuthEvent {}
+
+class AuthLogoutUser extends AuthEvent {}

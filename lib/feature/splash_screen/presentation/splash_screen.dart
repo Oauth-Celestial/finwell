@@ -2,6 +2,7 @@ import 'package:finwell/core/app_user/user_cubit/user_cubit_cubit.dart';
 import 'package:finwell/core/extensions/build_context.dart';
 import 'package:finwell/core/route_manager/navigator_service.dart';
 import 'package:finwell/core/route_manager/route_manager.dart';
+import 'package:finwell/feature/auth/presentation/bloc/auth_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,10 +25,15 @@ class _SplashScreenState extends State<SplashScreen> {
       if (FirebaseAuth.instance.currentUser != null) {
         NavigationService()
             .navigationContext!
-            .read<UserCubitCubit>()
+            .read<UserCubit>()
             .getCurrentUser()
             .then((value) {
-          NavigationService().pushNamed(routeDashboardScreen);
+          if (value) {
+            NavigationService().pushNamed(routeDashboardScreen);
+          } else {
+            context.read<AuthBloc>().add(AuthLogoutUser());
+            NavigationService().pushNamed(routeLoginScreen);
+          }
         });
       } else {
         NavigationService().pushNamed(preLoginOnboardScreen);

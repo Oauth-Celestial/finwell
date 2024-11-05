@@ -61,7 +61,7 @@ void main() async {
           ),
         ),
       ),
-      BlocProvider(create: (_) => UserCubitCubit()),
+      BlocProvider(create: (_) => UserCubit()),
       BlocProvider(
         create: (_) => TransactionBloc(
           createtransactionusecase: CreateTransactionUsecase(

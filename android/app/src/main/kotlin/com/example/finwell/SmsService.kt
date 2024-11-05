@@ -74,7 +74,7 @@ class SmsReceiver : BroadcastReceiver() {
         //val transactionMessage = "ICICI Bank Acct XX989 debited for Rs 500.00 on 02-Nov-24; yashdchaudhari9 credited. UPI:467346656220. Call 18002662 for dispute. SMS BLOCK 989 to 9215676766."
 
         // Regular expression to match amounts prefixed with Rs or INR
-        val regex = """\b(?:rs|inr)\s*([\d,]+(?:\.\d{1,2})?)\b""".toRegex()
+        val regex = """\b(?:rs\.?|inr\.?)\s*([\d,]+(?:\.\d{1,2})?)\b""".toRegex()
 
         // Find the first match in the transaction message
         val match = regex.find(text.lowercase())

@@ -1,10 +1,27 @@
 package com.example.finwell
 
 import android.database.sqlite.SQLiteDatabase
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class DatabaseHelper {
 
+
+
+    val LocalDate.day: Int
+        @RequiresApi(Build.VERSION_CODES.O)
+        get() = this.dayOfMonth
+
+    val LocalDate.monthName: String
+        @RequiresApi(Build.VERSION_CODES.O)
+        get() = this.format(DateTimeFormatter.ofPattern("MMMM"))
+
+    val LocalDate.year: String
+        @RequiresApi(Build.VERSION_CODES.O)
+        get() = this.year.toString()
     companion object{
         var instance:DatabaseHelper = DatabaseHelper()
     }
@@ -14,11 +31,13 @@ class DatabaseHelper {
     val tableName = "transactions"
     val columnAmount = "TransactionAmount"
     val columnCategory = "TransactionCategory"
-    val columnDate = "TransactionDate" // Corrected spelling from "TranscationDate"
+    val columnDate = "TransactionDate"
     val columnTransactionId = "TransactionId"
     val columnTransactionName = "TransactionName"
     val columnTransactionType = "TransactionType"
     val columnTransactionStatus = "TransactionStatus"
+    var columnTransactionMonth = "TransactionMonth"
+    var columnTrasactionYear = "TransactionYear"
 
 
 
@@ -30,7 +49,8 @@ class DatabaseHelper {
         }
     }
 
-    fun insertTransaction(amount:String,isDebited:Boolean){
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun insertTransaction(amount:String, isDebited:Boolean){
         openDataBase()
         val defaultCategory = "Housing"
         val defaultTransactionName = "Jon Doe Transaction"
@@ -38,6 +58,7 @@ class DatabaseHelper {
         val transactionId = millisecondsSinceEpoch.toString()
         var isExpense = "expense";
         val status = 0
+        val today = LocalDate.now()
 
         isExpense = if(isDebited){
             "expense"
@@ -46,7 +67,7 @@ class DatabaseHelper {
             "income"
         }
 try {
-    val sql = "INSERT into $tableName ($columnAmount,$columnCategory,$columnDate, $columnTransactionId, $columnTransactionName, $columnTransactionType, $columnTransactionStatus) VALUES(\"$amount\", \"$defaultCategory\", \"$millisecondsSinceEpoch\",\"$transactionId\",\"$defaultTransactionName\",\"$isExpense\",\"$status\")"
+    val sql = "INSERT into $tableName ($columnAmount,$columnCategory,$columnDate, $columnTransactionId, $columnTransactionName, $columnTransactionType, $columnTransactionStatus,$columnTransactionMonth,$columnTrasactionYear) VALUES(\"$amount\", \"$defaultCategory\", \"$millisecondsSinceEpoch\",\"$transactionId\",\"$defaultTransactionName\",\"$isExpense\",\"$status\",\"${today.monthName.lowercase()}\",\"${today.year}\\)"
     db!!.execSQL(sql)
 }
 catch (e:Exception){

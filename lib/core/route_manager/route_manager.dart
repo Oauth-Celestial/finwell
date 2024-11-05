@@ -3,6 +3,7 @@ import 'package:finwell/feature/auth/presentation/user_creation_success.dart';
 import 'package:finwell/feature/dashboard/presentation/dashboard.dart';
 import 'package:finwell/feature/onboarding/presentation/name_page.dart';
 import 'package:finwell/feature/onboarding/presentation/pre_login_onboarding/pre_login_onboard.dart';
+import 'package:finwell/feature/pending_transactions/presentation/catch_up_page.dart';
 import 'package:finwell/feature/pending_transactions/presentation/pending_page.dart';
 import 'package:finwell/feature/splash_screen/presentation/splash_screen.dart';
 import 'package:finwell/feature/transaction/presentation/add_transaction.dart';
@@ -47,6 +48,9 @@ class AppRouteManager {
       case routePendingTransaction:
         return MaterialPageRoute(
             builder: (_) => const PendingTransactionPage(), settings: settings);
+      case routeCatchUpPage:
+        return MaterialPageRoute(
+            builder: (_) => const CatchUpStartPage(), settings: settings);
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

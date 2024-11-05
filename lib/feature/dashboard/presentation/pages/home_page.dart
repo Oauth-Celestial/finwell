@@ -1,6 +1,9 @@
 import 'package:finwell/core/app_user/model/app_user_model.dart';
 import 'package:finwell/core/app_user/user_cubit/user_cubit_cubit.dart';
 import 'package:finwell/core/extensions/build_context.dart';
+import 'package:finwell/core/route_manager/navigator_service.dart';
+import 'package:finwell/core/route_manager/route_manager.dart';
+import 'package:finwell/core/shared_prefs/shared_pref_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,12 +22,17 @@ class _HomePageState extends State<HomePage> {
   MethodChannel platform = MethodChannel(
     'timeTracker',
   );
+
   @override
   void initState() {
     // TODO: implement initState
-    platform.invokeMethod(
-      "getForegroundPackage",
-    );
+    // platform.invokeMethod(
+    //   "getForegroundPackage",
+    // );
+
+    platform.invokeMethod("getPaymentApps").then((value) {
+      print(value);
+    });
 
     super.initState();
   }
@@ -34,13 +42,13 @@ class _HomePageState extends State<HomePage> {
     AppUserModel? currentuser = context.read<UserCubit>().state.userData;
     print(currentuser?.userName);
     return Scaffold(
-      backgroundColor: context.currentTheme!.backgroundColor,
+      backgroundColor: context.currentTheme!.backgroundColor.withOpacity(0.8),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: 10.h,
+              height: 20.h,
             ),
             Row(
               children: [
@@ -99,7 +107,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             SizedBox(
-              height: 10.h,
+              height: 20.h,
             ),
             Padding(
               padding: EdgeInsetsDirectional.only(start: 15.w),
@@ -163,7 +171,155 @@ class _HomePageState extends State<HomePage> {
             ),
             Padding(
               padding: EdgeInsetsDirectional.only(start: 15.w),
-              child: Text("Tools"),
+              child: Text(
+                "Tools",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15.sp),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.only(start: 15.w, top: 10.h),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: LayoutBuilder(builder: (context, constraints) {
+                      return ZoAnimatedGradientBorder(
+                        borderRadius: 15,
+                        shouldAnimate: false,
+                        blurRadius: 5,
+                        spreadRadius: 0,
+                        width: constraints.maxWidth,
+                        height: 100,
+                        gradientColor: [Colors.red, Colors.blue],
+                        child: Container(
+                          margin: EdgeInsets.all(8),
+                          child: InkWell(
+                            onTap: () {
+                              if (SharedPrefManager().getCatchupStatus()) {
+                                NavigationService()
+                                    .pushNamed(routePendingTransaction);
+                              } else {
+                                NavigationService().pushNamed(routeCatchUpPage);
+                              }
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 5.h,
+                                ),
+                                Text(
+                                  "Catch-Up",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  height: 5.h,
+                                ),
+                                Text("Catch up With missed transaction ",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 11.sp))
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                  SizedBox(
+                    width: 10.w,
+                  ),
+                  Expanded(
+                    child: LayoutBuilder(builder: (context, constraints) {
+                      return ZoAnimatedGradientBorder(
+                        borderRadius: 15,
+                        shouldAnimate: false,
+                        blurRadius: 5,
+                        spreadRadius: 0,
+                        width: constraints.maxWidth,
+                        height: 100,
+                        gradientColor: [Colors.red, Colors.blue],
+                        child: Container(
+                          margin: EdgeInsets.all(8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                              Text(
+                                "No Spend Mode",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                              Text("Helps you achieve a perfect no spend day",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 11.sp))
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                  SizedBox(
+                    width: 10.w,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 10.h,
+            ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.1),
+                        spreadRadius: 5.r,
+                        blurRadius: 7.r,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Recent Transaction",
+                          style: TextStyle(
+                              color: Colors.black.withOpacity(0.8),
+                              fontWeight: FontWeight.w300,
+                              fontSize: 15.sp),
+                        ),
+                      ),
+                      Expanded(
+                          child: Center(
+                        child: Container(
+                          child: Text("No Transactions "),
+                        ),
+                      ))
+                    ],
+                  ),
+                ),
+              ),
             )
           ],
         ),

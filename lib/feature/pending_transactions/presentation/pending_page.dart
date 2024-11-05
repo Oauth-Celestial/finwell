@@ -28,6 +28,7 @@ class _PendingTransactionPageState extends State<PendingTransactionPage> {
       backgroundColor: context.currentTheme!.backgroundColor,
       appBar: AppBar(
         centerTitle: true,
+        backgroundColor: Colors.white,
         title: Text("Pending Transactions"),
       ),
       body: BlocBuilder<PendingTransactionBloc, PendingTransactionState>(
@@ -45,8 +46,10 @@ class _PendingTransactionPageState extends State<PendingTransactionPage> {
                   return PendingTransactionCard(cardData: state.data?[index]);
                 });
           }
-          return Container(
-            child: Text("You have no pending transaction"),
+          return Center(
+            child: Container(
+              child: Text("You have no pending transaction"),
+            ),
           );
         },
       ),

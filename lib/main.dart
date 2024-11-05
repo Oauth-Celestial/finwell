@@ -3,6 +3,7 @@ import 'package:finwell/core/database/database_helper.dart';
 import 'package:finwell/core/notification/notification_service.dart';
 import 'package:finwell/core/route_manager/navigator_service.dart';
 import 'package:finwell/core/route_manager/route_manager.dart';
+import 'package:finwell/core/shared_prefs/shared_pref_manager.dart';
 import 'package:finwell/core/theme/app_theme.dart';
 import 'package:finwell/core/theme/theme_model.dart';
 import 'package:finwell/feature/auth/data/datasource/auth_data_source.dart';
@@ -35,6 +36,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await NotificationService().initNotification();
+  await SharedPrefManager().initialize();
   DatabaseHelper().getDb();
   runApp(MultiBlocProvider(
     providers: [

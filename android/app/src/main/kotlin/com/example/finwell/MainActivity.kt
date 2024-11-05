@@ -4,6 +4,8 @@ import android.app.ActivityManager
 import android.app.AppOpsManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.NonNull
@@ -52,6 +54,20 @@ class MainActivity: FlutterActivity() {
                 result.success(null)
             }
 
+            else if(call.method == "getPaymentApps"){
+                result.success(getPaymentApps())
+            }
+
+            else if(call.method == "serviceRunning"){
+                val isAlreadyRunning: Boolean = context.isMyServiceRunning(ActiveAppService::class.java)
+            result.success(isAlreadyRunning)
+            }
+
+            else if (call.method == "stopForegroundService"){
+                stopForegroundService()
+                result.success(null)
+            }
+
         }
     }
 
@@ -75,5 +91,29 @@ class MainActivity: FlutterActivity() {
         val manager = this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         return manager.getRunningServices(Integer.MAX_VALUE)
                 .any { it.service.className == serviceClass.name }
+    }
+
+    private fun stopForegroundService() {
+        val serviceIntent = Intent(this, ActiveAppService::class.java)
+        stopService(serviceIntent) // Stop the service
+    }
+
+
+    private fun getPaymentApps(): List<String> {
+        val paymentApps = mutableListOf<String>()
+        val packageManager = packageManager
+
+
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.addCategory(Intent.CATEGORY_DEFAULT)
+        intent.data = Uri.parse("upi://pay")
+
+        val resolveInfos = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        for (resolveInfo in resolveInfos) {
+            val packageName = resolveInfo.activityInfo.packageName
+            paymentApps.add(packageName)
+        }
+
+        return paymentApps
     }
 }

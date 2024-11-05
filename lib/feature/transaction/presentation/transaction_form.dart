@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:finwell/core/constants/constants.dart';
+import 'package:finwell/core/database/database_helper.dart';
 import 'package:finwell/core/extensions/build_context.dart';
 import 'package:finwell/core/extensions/ext_date_time.dart';
 import 'package:finwell/core/extensions/ext_string.dart';
@@ -237,20 +238,23 @@ class _TransactionFormState extends State<TransactionForm> {
                           String transactionId = Uuid().v1();
                           TransactionModel currentTransaction =
                               TransactionModel(
-                            transactionId: transactionId,
-                            transactionName: _nameController.text,
-                            transactionType: selectedTransactionType,
-                            transactionAmount:
-                                _amountController.text.removeCommas,
-                            transactionDate: picked!,
-                            transactionCategory: selectedCategory,
-                          );
+                                  transactionId: transactionId,
+                                  transactionName: _nameController.text,
+                                  transactionType: selectedTransactionType,
+                                  transactionAmount:
+                                      _amountController.text.removeCommas,
+                                  transactionDate: picked!,
+                                  transactionCategory: selectedCategory,
+                                  transactionMonth: picked!.monthName,
+                                  transactionYear: picked!.year.toString());
                           if (widget.pendingTransactionData != null) {
                             context.read<PendingTransactionBloc>().add(
                                 DeletePendingTransactionEvent(
                                     deleteTransaction:
                                         widget.pendingTransactionData!));
                           }
+                          DatabaseHelper()
+                              .insertTransaction(currentTransaction);
                           context.read<TransactionBloc>().add(
                               CreateTransactionEvent(
                                   transaction: currentTransaction));

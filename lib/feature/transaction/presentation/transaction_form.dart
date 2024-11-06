@@ -8,6 +8,7 @@ import 'package:finwell/core/route_manager/navigator_service.dart';
 import 'package:finwell/core/route_manager/route_manager.dart';
 import 'package:finwell/core/widgets/custom_drop_down.dart';
 import 'package:finwell/core/widgets/text_field/custom_text_field.dart';
+import 'package:finwell/feature/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:finwell/feature/pending_transactions/domain/entity/pending_transaction_model.dart';
 import 'package:finwell/feature/pending_transactions/presentation/bloc/pending_transaction_bloc.dart';
 import 'package:finwell/feature/transaction/domain/entities/transaction_model.dart';
@@ -20,8 +21,11 @@ import 'package:uuid/uuid.dart';
 class TransactionForm extends StatefulWidget {
   bool isforExpense;
   PendingTransactionModel? pendingTransactionData;
-  TransactionForm(
-      {super.key, this.isforExpense = true, this.pendingTransactionData});
+  TransactionForm({
+    super.key,
+    this.isforExpense = true,
+    this.pendingTransactionData,
+  });
 
   @override
   State<TransactionForm> createState() => _TransactionFormState();
@@ -253,8 +257,25 @@ class _TransactionFormState extends State<TransactionForm> {
                                     deleteTransaction:
                                         widget.pendingTransactionData!));
                           }
+                          context
+                              .read<DashboardBloc>()
+                              .add(LoadDashBoardEvent());
                           DatabaseHelper()
                               .insertTransaction(currentTransaction);
+                          if (context
+                                  .read<TransactionBloc>()
+                                  .state
+                                  .currentTransaction
+                                  ?.transactionDate
+                                  .toCustomFormattedString() ==
+                              picked!.toCustomFormattedString()) {
+                            NavigationService()
+                                .navigationContext!
+                                .read<TransactionBloc>()
+                                .add(FetchTransactionEvent(
+                                    transactionDate:
+                                        picked!.toCustomFormattedString()));
+                          }
                           context.read<TransactionBloc>().add(
                               CreateTransactionEvent(
                                   transaction: currentTransaction));

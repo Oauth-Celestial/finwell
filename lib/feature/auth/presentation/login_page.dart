@@ -46,8 +46,6 @@ class _LoginPageState extends State<LoginPage> {
 
   getPermissions() async {
     await _requestAndroidNotificationPermission();
-    await _requestSmsPermission();
-    // await UsageStatsPermission.requestUsageStatsPermission();
   }
 
   @override

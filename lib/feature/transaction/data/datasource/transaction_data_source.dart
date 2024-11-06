@@ -21,7 +21,7 @@ class TransactionDataSourceImpl implements TransactionDataSource {
       await FirebaseFirestore.instance
           .collection("Users")
           .doc(userId)
-          .collection(transactionDate)
+          .collection("Transactions")
           .doc(transactionData.transactionId)
           .set(transactionData.toMap());
       return transactionData;
@@ -39,7 +39,8 @@ class TransactionDataSourceImpl implements TransactionDataSource {
       QuerySnapshot transactionCollectionSnap = await FirebaseFirestore.instance
           .collection("Users")
           .doc(userId)
-          .collection(transactionDate)
+          .collection("Transactions")
+          .where('transactionFormatedDate', isEqualTo: transactionDate)
           .get();
 
       List<QueryDocumentSnapshot> docs = transactionCollectionSnap.docs;

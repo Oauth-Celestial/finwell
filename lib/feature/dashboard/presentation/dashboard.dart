@@ -4,6 +4,7 @@ import 'package:finwell/core/app_user/user_cubit/user_cubit_cubit.dart';
 import 'package:finwell/core/extensions/build_context.dart';
 import 'package:finwell/core/extensions/ext_date_time.dart';
 import 'package:finwell/core/route_manager/navigator_service.dart';
+import 'package:finwell/feature/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:finwell/feature/dashboard/presentation/pages/home_page.dart';
 import 'package:finwell/feature/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:finwell/feature/transaction/presentation/transaction_page.dart';
@@ -56,6 +57,7 @@ class _DashboardPageState extends State<DashboardPage> {
         FetchTransactionEvent(
             transactionDate: DateTime.now().toCustomFormattedString()));
     AppUpdateService().checkForUpdate();
+    context.read<DashboardBloc>().add(LoadDashBoardEvent());
     super.initState();
   }
 
@@ -63,46 +65,6 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: context.currentTheme!.backgroundColor,
-        // appBar: AppBar(
-        //   automaticallyImplyLeading: false,
-        //   backgroundColor: context.currentTheme!.backgroundColor,
-        //   title: Text(
-        //     "Finwell",
-        //     style: TextStyle(
-        //         color: context.currentTheme!.textColor,
-        //         fontWeight: FontWeight.bold),
-        //   ),
-        //   actions: [
-        //     // BellIcon(
-        //     //   onPressed: () {
-        //     //     Navigator.pushNamed(context, routePendingTransaction);
-        //     //   },
-        //     // )
-
-        //     ZoAnimatedGradientBorder(
-        //       width: 25.h,
-        //       height: 25.h,
-        //       gradientColor: [Colors.blue, Colors.red],
-        //       shouldAnimate: false,
-        //       spreadRadius: 0,
-        //       borderThickness: 2,
-        //       blurRadius: 0,
-        //       child: SizedBox(
-        //         width: 25.h,
-        //         height: 25.h,
-        //         child: ClipRRect(
-        //           borderRadius: BorderRadius.circular(50),
-        //           child: Image.network(
-        //               fit: BoxFit.fill,
-        //               FirebaseAuth.instance.currentUser!.photoURL!),
-        //         ),
-        //       ),
-        //     ),
-        //     SizedBox(
-        //       width: 10.w,
-        //     )
-        //   ],
-        // ),
         body: BlocBuilder<UserCubit, UserCubitState>(
           builder: (context, state) {
             return state.status != UserStatus.loggedin

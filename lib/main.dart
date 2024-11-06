@@ -11,6 +11,10 @@ import 'package:finwell/feature/auth/data/repository/auth_repository_impl.dart';
 import 'package:finwell/feature/auth/domain/usecase/create_user_use_case.dart';
 import 'package:finwell/feature/auth/domain/usecase/google_login_use_case.dart';
 import 'package:finwell/feature/auth/presentation/bloc/auth_bloc.dart';
+import 'package:finwell/feature/dashboard/data/datasource/dashboard_data_source.dart';
+import 'package:finwell/feature/dashboard/data/repository/dashboard_repo_impl.dart';
+import 'package:finwell/feature/dashboard/domain/usecase/dashboard_details_use_case.dart';
+import 'package:finwell/feature/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:finwell/feature/onboarding/data/datasource/onboarding_datasource.dart';
 import 'package:finwell/feature/onboarding/data/repository/onboarding_repository_impl.dart';
 import 'package:finwell/feature/onboarding/domain/usecase/update_user_usecase.dart';
@@ -89,6 +93,15 @@ void main() async {
                 pendingTransactionRepository: PendingRepoImpl(
                     pendingTransactionDataSource:
                         PendingTransactionDataSourceImpl()))),
+      ),
+      BlocProvider(
+        create: (_) => DashboardBloc(
+          dashboardDetailsUseCase: DashboardDetailsUseCase(
+            repository: DashboardRepoImpl(
+              dataSource: DashboardDataSourceImpl(),
+            ),
+          ),
+        ),
       )
     ],
     child: const MyApp(),

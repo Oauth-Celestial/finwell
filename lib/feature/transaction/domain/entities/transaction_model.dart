@@ -26,13 +26,14 @@ class TransactionModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'transactionId': transactionId,
-      'transactionName': transactionName,
-      'transactionType': transactionType,
+      'transactionName': transactionName.trim(),
+      'transactionType': transactionType.toLowerCase().trim(),
       'transactionAmount': transactionAmount,
-      'transactionCategory': transactionCategory,
+      'transactionCategory': transactionCategory.toLowerCase().trim(),
       'transactionDate': transactionDate,
-      'transactionMonth': transactionDate.monthName,
-      'transactionYear': transactionDate.year.toString()
+      'transactionMonth': transactionDate.monthName.toLowerCase().trim(),
+      'transactionFormatedDate': transactionDate.toCustomFormattedString(),
+      'transactionYear': transactionDate.year.toString().trim()
     };
   }
 

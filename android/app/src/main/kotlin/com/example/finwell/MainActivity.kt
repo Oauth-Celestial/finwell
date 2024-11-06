@@ -21,7 +21,7 @@ class MainActivity: FlutterActivity() {
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, methodChannelName).setMethodCallHandler { call, result ->
-            if (call.method == "getForegroundPackage") {
+            if (call.method == "startForeGround") {
                // val hashMap = call.arguments as HashMap<*, *> //Get the arguments as a HashMap
 
 //                val dbPath = hashMap["dbPath"]
@@ -58,7 +58,7 @@ class MainActivity: FlutterActivity() {
                 result.success(getPaymentApps())
             }
 
-            else if(call.method == "serviceRunning"){
+            else if(call.method == "isServiceRunning"){
                 val isAlreadyRunning: Boolean = context.isMyServiceRunning(ActiveAppService::class.java)
             result.success(isAlreadyRunning)
             }
@@ -68,6 +68,17 @@ class MainActivity: FlutterActivity() {
                 result.success(null)
             }
 
+            else if(call.method == "askDrawPermission"){
+                requestOvelayPermission()
+            }
+
+        }
+    }
+
+    fun requestOvelayPermission(){
+        if (!Settings.canDrawOverlays(this)) {
+            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+            startActivity(intent)
         }
     }
 

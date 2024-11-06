@@ -15,7 +15,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import java.util.regex.Pattern
 import kotlin.random.Random
 
 
@@ -123,7 +122,7 @@ class SmsReceiver : BroadcastReceiver() {
 
         if(amount.isEmpty()){
             val notificationBuilder = NotificationCompat.Builder(context, channelId)
-                    .setSmallIcon(android.R.drawable.ic_menu_view)
+                    .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentTitle("A Transaction took place")
                     .setContentText(getNotificationTitle())
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -140,7 +139,7 @@ class SmsReceiver : BroadcastReceiver() {
         }
         else{
             val notificationBuilder = NotificationCompat.Builder(context, channelId)
-                    .setSmallIcon(android.R.drawable.ic_menu_view)
+                    .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentTitle("Tell us where you $spent")
                     .setContentText(message)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -157,7 +156,6 @@ class SmsReceiver : BroadcastReceiver() {
         }
 
 
-
     fun getNotificationTitle(): String {
         // List of funny transaction messages
         val notifications = listOf(
@@ -171,11 +169,7 @@ class SmsReceiver : BroadcastReceiver() {
                 "Looks like you've been making those digits work overtime! 🔢💼"
         )
 
-        // Pick a random notification
-        val randomNotification = notifications[Random.nextInt(notifications.size)]
-
-        // Print the random notification
-      return  randomNotification
+        return notifications[Random.nextInt(notifications.size)]
     }
 
 

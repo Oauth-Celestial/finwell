@@ -9,37 +9,70 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.PixelFormat
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 
 import java.util.*
 
 class ActiveAppService: Service() {
+
+
+
+
     private var iconNotification: Bitmap? = null
     private var notification: Notification? = null
     var mNotificationManager: NotificationManager? = null
-   // var window:AppRestrictWindow? = null
+
+    // var window:AppRestrictWindow? = null
     var previousApp = ""
     var currentApp = ""
     var sessionStartTime = ""
     var appSession = 0
+    var paymentApps: List<String> = listOf<String>()
 
 
     private val mNotificationId = 123
+    var overlayView:View? = null
 
     val TAG = "RaviForeground"
     private val builder = NotificationCompat.Builder(this, "service_channel")
 
-// BuildForeGroundTaskNotification is responsible to build notification every time the foreground app change
-    private fun buildForegroundTaskNotification() {
+    // BuildForeGroundTaskNotification is responsible to build notification every time the foreground app change
 
+    private fun getPaymentPackages(): List<String> {
+        val paymentApps = mutableListOf<String>()
+        val packageManager = packageManager
+
+
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.addCategory(Intent.CATEGORY_DEFAULT)
+        intent.data = Uri.parse("upi://pay")
+
+        val resolveInfos = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        for (resolveInfo in resolveInfos) {
+            val packageName = resolveInfo.activityInfo.packageName
+            paymentApps.add(packageName)
+        }
+
+        return paymentApps
+    }
+
+    private fun buildForegroundTaskNotification() {
+        paymentApps = getPaymentPackages();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             previousApp = currentApp
             currentApp = getTopPkgName(this)
@@ -47,7 +80,7 @@ class ActiveAppService: Service() {
         } else {
             val am = this.getSystemService(ACTIVITY_SERVICE) as ActivityManager
             val tasks = am.runningAppProcesses
-            Log.e("Running Task","${tasks.size}")
+            Log.e("Running Task", "${tasks.size}")
             previousApp = currentApp
             currentApp = tasks[0].processName
 
@@ -61,44 +94,22 @@ class ActiveAppService: Service() {
                 PendingIntent.getActivity(this, 0, intentMainLanding, PendingIntent.FLAG_IMMUTABLE)
         val mNotificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         try {
-//            var appUsage:Int =  DatabaseHandler.instance.getAppDuration(currentApp,appName)
-//            var appCount:Int = DatabaseHandler.instance.getAppLaunchCount(currentApp,appName)
-//            var isFocusModeApp = DatabaseHandler.instance.inFocusMode(currentApp);
-//            var focusModeAppDuration = -1
-//            if (isFocusModeApp){
-//                focusModeAppDuration = DatabaseHandler.instance.getFocusModeDurationFor(currentApp);
-//                if(appUsage > focusModeAppDuration ){
-//                    Log.e("Close Focus App",currentApp)
-//                    closeFocusModeApp()
-//                }
-//            }
 
-            if (previousApp != currentApp){
+
+            if (previousApp != currentApp) {
 
             }
-//            val updatedSessionTime = DateHelper.instance.getCurrentSessionTime()
-//            DatabaseHandler.instance.updateCurrentSession(currentApp,sessionStartTime,updatedSessionTime)
-//
-//            DatabaseHandler.instance.addOrUpdateAppDuration(AppInfoModel(appName,currentApp,(appUsage +1).toString(),appCount.toString()))
-//            val icon: Drawable = this.packageManager.getApplicationIcon(currentApp)
 
-
-                builder.setContentTitle(
-                        StringBuilder("Finwell").
-                        toString()
-                )
-                        .setContentText("NO spend Mode active") //
-                        //                , swipe down for more options.
-
-                        .setPriority(NotificationCompat.PRIORITY_LOW)
-                        .setWhen(0)
-                        .setOnlyAlertOnce(true)
-
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentIntent(pendingIntent)
-
-
-                        .setOngoing(true)
+            builder.setContentTitle(
+                    StringBuilder("No spend Mode active").toString()
+            )
+                    .setContentText("All payment apps are disable")
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .setWhen(0)
+                    .setOnlyAlertOnce(true)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentIntent(pendingIntent)
+                    .setOngoing(true)
 
 
             //
@@ -106,34 +117,34 @@ class ActiveAppService: Service() {
 //            builder.color =
             notification = builder.build()
             //DatabaseHandler.instance.getAllApps()
-            if(Helper.isAppRunning(this,currentApp)){
-                Log.e("App Is Running",currentApp)
-            }
-            else{
-                Log.e("service is running For",currentApp)
+            if (Helper.isAppRunning(this, currentApp)) {
+                Log.e("App Is Running", currentApp)
+            } else {
+                Log.e("service is running For", currentApp)
             }
 
 
             val activeApp = getTopPkgName(this);
-            Log.e("Current Active App","$currentApp")
-            Log.e("fromTopPkg","$activeApp")
+            Log.e("Current Active App", "$currentApp")
+            Log.e("fromTopPkg", "$activeApp")
 
 
 //
-            if (currentApp == "com.lipisoft.quickvpn"){
+            if (paymentApps.contains(currentApp)){
                 closeRestrictedApp()
             }
+            else{
+                removeOverlay()
+            }
 
-            mNotificationManager.notify(mNotificationId,notification);
+            mNotificationManager.notify(mNotificationId, notification);
 
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         }
 
 
-
     }
-
 
 
     fun getForegroundApplication(context: Context) {
@@ -155,8 +166,6 @@ class ActiveAppService: Service() {
         }
         return null
     }
-
-
 
 
     override fun onCreate() {
@@ -195,15 +204,36 @@ class ActiveAppService: Service() {
 //        this.startActivity(startMain)
 //    }
 
-    fun closeRestrictedApp(){
-
+    fun closeRestrictedApp() {
+if(overlayView == null){
+    showOverlay()
+}
 //        window?.open()
 
-        val startMain = Intent(Intent.ACTION_MAIN)
-        startMain.addCategory(Intent.CATEGORY_HOME)
-        startMain.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        Toast.makeText(this, "Daily Usage Reached", Toast.LENGTH_SHORT).show()
-        this.startActivity(startMain)
+
+
+
+    }
+
+
+
+    private fun openApp() {
+        try {
+            val openAppIntent = Intent(this, MainActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            }
+            startActivity(openAppIntent)
+        }
+        catch (e:Exception){
+            Log.e("Navigation Exception", e.toString())
+        }
+    }
+
+    private fun goToHomeScreen() {
+        val intent = Intent(Intent.ACTION_MAIN)
+        intent.addCategory(Intent.CATEGORY_HOME)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
     }
 
 
@@ -262,7 +292,6 @@ class ActiveAppService: Service() {
         }
 
 
-
     }
 
     object Helper {
@@ -285,7 +314,7 @@ class ActiveAppService: Service() {
         val m = seconds % 3600 / 60
         val s = seconds % 60
         val sh = if (h > 0) "$h h" else ""
-        val sm = (if (m < 10 &&( m > 0) && h > 0) "0" else "") + if (m > 0) (if (h > 0 && s == 0) m.toString() else "$m min") else ""
+        val sm = (if (m < 10 && (m > 0) && h > 0) "0" else "") + if (m > 0) (if (h > 0 && s == 0) m.toString() else "$m min") else ""
         val ss = if (s == 0 && (h > 0 || m > 0)) "" else (if (s < 10 && (h > 0 || m > 0)) "0" else "") + s.toString() + " " + "sec"
         return sh + (if (h > 0) " " else "") + sm + (if (m > 0) " " else "") + ss
     }
@@ -317,7 +346,7 @@ class ActiveAppService: Service() {
                 }
             }
         }
-        if (pkgName == null){
+        if (pkgName == null) {
             var currentApp = ""
             val usm = this.getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
             val time = System.currentTimeMillis()
@@ -333,11 +362,40 @@ class ActiveAppService: Service() {
                 }
             }
             return currentApp
-        }
-        else{
-            return  pkgName
+        } else {
+            return pkgName
         }
 
     }
 
+    private fun showOverlay() {
+        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+        val layoutParams = WindowManager.LayoutParams(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,  // For Android Oreo and above
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT
+        )
+
+        layoutParams.gravity = Gravity.CENTER
+        overlayView = LayoutInflater.from(this).inflate(R.layout.overlay_layout, null)
+        windowManager.addView(overlayView, layoutParams)
+
+        // Example: You can manipulate the view like updating text dynamically
+        val textView: TextView = overlayView!!.findViewById(R.id.overlay_text)
+        textView.text = "No Spend Mode Active"
     }
+    fun removeOverlay(){
+        if(overlayView != null){
+            val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            windowManager.removeViewImmediate(overlayView)
+            overlayView = null
+        }
+
+    }
+
+
+}
+

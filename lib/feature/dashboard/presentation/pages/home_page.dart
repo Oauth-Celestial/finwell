@@ -241,26 +241,39 @@ class _HomePageState extends State<HomePage> {
                         width: constraints.maxWidth,
                         height: 100,
                         gradientColor: [Colors.red, Colors.blue],
-                        child: Container(
-                          margin: EdgeInsets.all(8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: 5.h,
-                              ),
-                              Text(
-                                "No Spend Mode",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(
-                                height: 5.h,
-                              ),
-                              Text("Helps you achieve a perfect no spend day",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w300,
-                                      fontSize: 11.sp))
-                            ],
+                        child: InkWell(
+                          onTap: () async {
+                            NavigationService().pushNamed(routeNoSpendMode);
+                            // bool isServiceRunning = await platform.invokeMethod(
+                            //   "isServiceRunning",
+                            // );
+                            // print(isServiceRunning);
+
+                            // platform.invokeMethod(
+                            //   "getForegroundPackage",
+                            // );
+                          },
+                          child: Container(
+                            margin: EdgeInsets.all(8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 5.h,
+                                ),
+                                Text(
+                                  "No Spend Mode",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  height: 5.h,
+                                ),
+                                Text("Helps you achieve a perfect no spend day",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 11.sp))
+                              ],
+                            ),
                           ),
                         ),
                       );

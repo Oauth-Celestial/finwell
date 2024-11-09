@@ -17,8 +17,10 @@ class PendingTransactionDataSourceImpl implements PendingTransactionDataSource {
 
     Database db = await DatabaseHelper().getDb();
 
-    List<Map<String, dynamic>> pendingTransactionsData =
-        await db.query("${DatabaseHelper().tableName}");
+    List<Map<String, dynamic>> pendingTransactionsData = await db.query(
+        "${DatabaseHelper().tableName}",
+        where: "${DatabaseHelper().columnTransactionStatus} = ?",
+        whereArgs: [0]);
     print(pendingTransactionsData.first.prettyPrint());
     return pendingTransactionsData.map((transaction) {
       return PendingTransactionModel.fromMap(transaction);

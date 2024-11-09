@@ -257,6 +257,9 @@ class _TransactionFormState extends State<TransactionForm> {
                                     deleteTransaction:
                                         widget.pendingTransactionData!));
                           }
+                          context.read<TransactionBloc>().add(
+                              CreateTransactionEvent(
+                                  transaction: currentTransaction));
                           context
                               .read<DashboardBloc>()
                               .add(LoadDashBoardEvent());
@@ -276,9 +279,6 @@ class _TransactionFormState extends State<TransactionForm> {
                                     transactionDate:
                                         picked!.toCustomFormattedString()));
                           }
-                          context.read<TransactionBloc>().add(
-                              CreateTransactionEvent(
-                                  transaction: currentTransaction));
                         }
                       },
                       child: BlocConsumer<TransactionBloc, TransactionState>(

@@ -67,7 +67,7 @@ class DatabaseHelper {
             "income"
         }
 try {
-    val sql = "INSERT into $tableName ($columnAmount,$columnCategory,$columnDate, $columnTransactionId, $columnTransactionName, $columnTransactionType, $columnTransactionStatus,$columnTransactionMonth,$columnTrasactionYear) VALUES(\"$amount\", \"$defaultCategory\", \"$millisecondsSinceEpoch\",\"$transactionId\",\"$defaultTransactionName\",\"$isExpense\",\"$status\",\"${today.monthName.lowercase()}\",\"${today.year}\\)"
+    val sql = "INSERT into $tableName ($columnAmount,$columnCategory,$columnDate, $columnTransactionId, $columnTransactionName, $columnTransactionType, $columnTransactionStatus,$columnTransactionMonth,$columnTrasactionYear) VALUES(\"$amount\", \"$defaultCategory\", \"$millisecondsSinceEpoch\",\"$transactionId\",\"$defaultTransactionName\",\"$isExpense\",\"$status\",\"${today.monthName.lowercase()}\",\"${today.year}\")"
     db!!.execSQL(sql)
 }
 catch (e:Exception){
